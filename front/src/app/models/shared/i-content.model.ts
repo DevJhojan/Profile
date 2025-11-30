@@ -1,4 +1,3 @@
-import { TitleComponent } from '../../shared/components/title/title.component';
 export interface IContent{
   titleButton: string;
   listContent?: ISubContend[];
