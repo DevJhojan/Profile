@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ThemeService } from '../../services/theme.service';
+import { ModalComponent } from '../modal/modal.component';
 import { projectsData } from '../../data/Projects.data';
 import { skillsData } from '../../data/skills.data';
 import { contentsData } from '../../data/contents.data';
@@ -9,7 +10,7 @@ import type { ICardProjects, ICardNormal, IContent } from '@models';
 @Component({
   selector: 'app-portfolio',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ModalComponent],
   templateUrl: './portfolio.component.html',
   styleUrl: './portfolio.component.css'
 })
@@ -17,7 +18,6 @@ export class PortfolioComponent implements OnInit {
   private themeService = inject(ThemeService);
   
   ngOnInit(): void {
-    // Asegurar que el tema se inicialice al cargar el componente
     this.themeService.currentTheme();
   }
   
@@ -56,21 +56,10 @@ export class PortfolioComponent implements OnInit {
   
   openModal(): void {
     this.isModalOpen = true;
-    // Prevenir scroll del body cuando el modal está abierto
-    document.body.style.overflow = 'hidden';
   }
   
   closeModal(): void {
     this.isModalOpen = false;
-    // Restaurar scroll del body
-    document.body.style.overflow = 'auto';
-  }
-  
-  onModalBackdropClick(event: Event): void {
-    // Cerrar modal si se hace clic en el backdrop
-    if (event.target === event.currentTarget) {
-      this.closeModal();
-    }
   }
 }
 

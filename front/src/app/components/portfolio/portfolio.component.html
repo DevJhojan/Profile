@@ -90,37 +90,11 @@
   </main>
 
   <!-- Modal "Más sobre mí" -->
-  @if (isModalOpen) {
-    <div class="modal-backdrop" (click)="onModalBackdropClick($event)">
-      <div class="modal-container" (click)="$event.stopPropagation()">
-        <div class="modal-header">
-          <h2>Más sobre mí</h2>
-          <button class="modal-close-btn" (click)="closeModal()" aria-label="Cerrar modal">
-            <span>×</span>
-          </button>
-        </div>
-        <div class="modal-content">
-          @for (content of allContents; track content.titleButton) {
-            <div class="modal-section">
-              <h3 class="section-title">{{ content.titleButton }}</h3>
-              <ul class="modal-list">
-                @for (item of content.listContent; track item.subTitle) {
-                  <li class="modal-item">
-                    <div class="modal-item-header">
-                      <strong class="modal-item-title">{{ item.subTitle }}</strong>
-                    </div>
-                    <div class="modal-item-body">
-                      <span class="modal-item-institution">{{ item.description }}</span>
-                      <span class="modal-item-date">{{ item.date }}</span>
-                    </div>
-                  </li>
-                }
-              </ul>
-            </div>
-          }
-        </div>
-      </div>
-    </div>
-  }
+  <app-modal
+    [isOpen]="isModalOpen"
+    [title]="'Más sobre mí'"
+    [contents]="allContents"
+    (close)="closeModal()">
+  </app-modal>
 </div>
 
