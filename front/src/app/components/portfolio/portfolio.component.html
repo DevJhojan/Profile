@@ -1,0 +1,126 @@
+<div class="portfolio-container">
+  <!-- Header -->
+  <header class="portfolio-header">
+    <button 
+      class="theme-toggle-btn" 
+      (click)="toggleTheme()"
+      [attr.aria-label]="currentTheme === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'"
+      title="Cambiar tema">
+      <img 
+        [src]="currentTheme === 'dark' ? 'assets/img/Cambio_tema/sun.png' : 'assets/img/Cambio_tema/moon.png'" 
+        [alt]="currentTheme === 'dark' ? 'Tema claro' : 'Tema oscuro'"
+        class="theme-icon">
+    </button>
+    <h1 class="full-name">{{ fullName }}</h1>
+  </header>
+
+  <!-- Sección Principal - 3 Columnas -->
+  <main class="portfolio-main">
+    <!-- Columna Izquierda - Proyectos -->
+    <section class="portfolio-column projects-column">
+      <div class="column-header">
+        <h2>Proyectos</h2>
+      </div>
+      <div class="projects-list">
+        @for (project of projects; track project.name) {
+          <div class="project-card" (click)="openProject(project.url)">
+            <div class="project-image">
+              <img [src]="project.img" [alt]="project.name" loading="lazy">
+            </div>
+            <div class="project-info">
+              <h3>{{ project.name }}</h3>
+              <p class="project-tool">{{ project.tool }}</p>
+              <span class="project-state" [class.active]="project.state.toLowerCase() === 'active'">
+                {{ project.state }}
+              </span>
+            </div>
+          </div>
+        }
+      </div>
+    </section>
+
+    <!-- Columna Central - Información Personal -->
+    <section class="portfolio-column center-column">
+      <!-- Botón "Más sobre mí" -->
+      <button class="about-me-btn" (click)="openModal()">
+        <h2>Más sobre mí</h2>
+        <span class="btn-icon">→</span>
+      </button>
+      
+      <!-- Imagen de Perfil -->
+      <div class="profile-image-container">
+        <img 
+          [src]="profileImage" 
+          alt="Jhojan Danilo Toro Perez" 
+          class="profile-image"
+          loading="lazy">
+      </div>
+    </section>
+
+    <!-- Columna Derecha - Habilidades -->
+    <section class="portfolio-column skills-column">
+      <div class="column-header">
+        <h2>Habilidades duras y blandas</h2>
+      </div>
+      <div class="skills-content">
+        @for (skillGroup of skills; track skillGroup.h2) {
+          <div class="skill-group">
+            <h3>{{ skillGroup.h2 }}</h3>
+            <div class="skills-list">
+              @if (skillGroup.items) {
+                @for (skill of skillGroup.items; track skill) {
+                  <span class="skill-chip">{{ skill }}</span>
+                }
+              }
+              @if (skillGroup.itemsObject) {
+                @for (skillObj of skillGroup.itemsObject; track skillObj.name) {
+                  <div class="skill-item-object">
+                    @if (skillObj.img) {
+                      <img [src]="skillObj.img" [alt]="skillObj.name" class="skill-icon">
+                    }
+                    <span>{{ skillObj.name }}</span>
+                  </div>
+                }
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal "Más sobre mí" -->
+  @if (isModalOpen) {
+    <div class="modal-backdrop" (click)="onModalBackdropClick($event)">
+      <div class="modal-container" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>Más sobre mí</h2>
+          <button class="modal-close-btn" (click)="closeModal()" aria-label="Cerrar modal">
+            <span>×</span>
+          </button>
+        </div>
+        <div class="modal-content">
+          @for (content of allContents; track content.titleButton) {
+            <div class="modal-section">
+              <h3 class="section-title">{{ content.titleButton }}</h3>
+              <ul class="modal-list">
+                @for (item of content.listContent; track item.subTitle) {
+                  <li class="modal-item">
+                    <div class="modal-item-header">
+                      <strong class="modal-item-title">{{ item.subTitle }}</strong>
+                    </div>
+                    <div class="modal-item-body">
+                      <span class="modal-item-institution">{{ item.description }}</span>
+                      <span class="modal-item-date">{{ item.date }}</span>
+                    </div>
+                  </li>
+                }
+              </ul>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</div>
+
