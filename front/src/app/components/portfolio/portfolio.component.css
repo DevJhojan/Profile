@@ -515,6 +515,43 @@
   }
 }
 
+/* Botón de cambio de idioma */
+.language-toggle-btn {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid var(--title);
+  background: var(--bgColor);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadowMid);
+  z-index: 100;
+}
+
+.language-toggle-btn:hover {
+  background: var(--bgColorHover);
+  transform: scale(1.1);
+  box-shadow: var(--shadowEnd);
+}
+
+.language-toggle-btn:active {
+  transform: scale(0.95);
+}
+
+.language-code {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--title);
+  font-family: 'Courier New', 'Consolas', 'Monaco', 'Lucida Console', monospace;
+  letter-spacing: 1px;
+}
+
 /* Scrollbar personalizado para listas */
 .projects-list::-webkit-scrollbar,
 .skills-content::-webkit-scrollbar {
@@ -536,5 +573,32 @@
 .projects-list::-webkit-scrollbar-thumb:hover,
 .skills-content::-webkit-scrollbar-thumb:hover {
   background: var(--title);
+}
+
+/* Responsive para botón de idioma */
+@media (max-width: 768px) {
+  .language-toggle-btn {
+    width: 45px;
+    height: 45px;
+    bottom: 1rem;
+    right: 1rem;
+  }
+
+  .language-code {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .language-toggle-btn {
+    width: 40px;
+    height: 40px;
+    bottom: 0.75rem;
+    right: 0.75rem;
+  }
+
+  .language-code {
+    font-size: 0.85rem;
+  }
 }
 

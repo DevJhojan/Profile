@@ -1,10 +1,9 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ThemeService } from '../../services/theme.service';
+import { LanguageService } from '../../services/language.service';
 import { ModalComponent } from '../modal/modal.component';
-import { projectsData } from '../../data/Projects.data';
-import { skillsData } from '../../data/skills.data';
-import { contentsData } from '../../data/contents.data';
+import { projectsData, skillsData, contentsData } from '../../data/translations.data';
 import type { ICardProjects, ICardNormal, IContent } from '@models';
 
 @Component({
@@ -16,15 +15,19 @@ import type { ICardProjects, ICardNormal, IContent } from '@models';
 })
 export class PortfolioComponent implements OnInit {
   private themeService = inject(ThemeService);
+  private languageService = inject(LanguageService);
   
   ngOnInit(): void {
     this.themeService.currentTheme();
   }
   
-  // Datos
-  projects: ICardProjects[] = projectsData;
-  skills: ICardNormal[] = skillsData;
-  allContents: IContent[] = contentsData;
+  // Datos traducidos
+  projects = computed(() => projectsData[this.languageService.currentLanguage()]);
+  skills = computed(() => skillsData[this.languageService.currentLanguage()]);
+  allContents = computed(() => contentsData[this.languageService.currentLanguage()]);
+  
+  // Traducciones
+  t = computed(() => this.languageService.getTranslations());
   
   // Estado del modal
   isModalOpen = false;
@@ -44,8 +47,17 @@ export class PortfolioComponent implements OnInit {
     return this.themeService.currentWallpaper();
   }
   
+  // Getters para el servicio de idioma
+  get currentLanguage() {
+    return this.languageService.currentLanguage();
+  }
+  
   toggleTheme(): void {
     this.themeService.toggleTheme();
+  }
+  
+  toggleLanguage(): void {
+    this.languageService.toggleLanguage();
   }
   
   openProject(url: string): void {

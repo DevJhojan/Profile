@@ -4,11 +4,11 @@
     <button 
       class="theme-toggle-btn" 
       (click)="toggleTheme()"
-      [attr.aria-label]="currentTheme === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'"
-      title="Cambiar tema">
+      [attr.aria-label]="t().changeThemeToLight"
+      [title]="t().changeTheme">
       <img 
         [src]="currentTheme === 'dark' ? 'assets/img/Cambio_tema/sun.png' : 'assets/img/Cambio_tema/moon.png'" 
-        [alt]="currentTheme === 'dark' ? 'Tema claro' : 'Tema oscuro'"
+        [alt]="currentTheme === 'dark' ? t().changeThemeToLight : t().changeThemeToDark"
         class="theme-icon">
     </button>
     <h1 class="full-name">{{ fullName }}</h1>
@@ -19,10 +19,10 @@
     <!-- Columna Izquierda - Proyectos -->
     <section class="portfolio-column projects-column">
       <div class="column-header">
-        <h2>Proyectos</h2>
+        <h2>{{ t().projects }}</h2>
       </div>
       <div class="projects-list">
-        @for (project of projects; track project.name) {
+        @for (project of projects(); track project.name) {
           <div class="project-card" (click)="openProject(project.url)">
             <div class="project-image">
               <img [src]="project.img" [alt]="project.name" loading="lazy">
@@ -30,7 +30,7 @@
             <div class="project-info">
               <h3>{{ project.name }}</h3>
               <p class="project-tool">{{ project.tool }}</p>
-              <span class="project-state" [class.active]="project.state.toLowerCase() === 'active'">
+              <span class="project-state" [class.active]="project.state.toLowerCase() === 'active' || project.state.toLowerCase() === 'activo'">
                 {{ project.state }}
               </span>
             </div>
@@ -43,7 +43,7 @@
     <section class="portfolio-column center-column">
       <!-- Botón "Más sobre mí" -->
       <button class="about-me-btn" (click)="openModal()">
-        <h2>Más sobre mí</h2>
+        <h2>{{ t().aboutMe }}</h2>
         <span class="btn-icon">→</span>
       </button>
       
@@ -60,10 +60,10 @@
     <!-- Columna Derecha - Habilidades -->
     <section class="portfolio-column skills-column">
       <div class="column-header">
-        <h2>Habilidades duras y blandas</h2>
+        <h2>{{ t().hardAndSoftSkills }}</h2>
       </div>
       <div class="skills-content">
-        @for (skillGroup of skills; track skillGroup.h2) {
+        @for (skillGroup of skills(); track skillGroup.h2) {
           <div class="skill-group">
             <h3>{{ skillGroup.h2 }}</h3>
             <div class="skills-list">
@@ -92,9 +92,18 @@
   <!-- Modal "Más sobre mí" -->
   <app-modal
     [isOpen]="isModalOpen"
-    [title]="'Más sobre mí'"
-    [contents]="allContents"
+    [title]="t().modalTitle"
+    [contents]="allContents()"
     (close)="closeModal()">
   </app-modal>
+
+  <!-- Botón de cambio de idioma -->
+  <button 
+    class="language-toggle-btn" 
+    (click)="toggleLanguage()"
+    [attr.aria-label]="currentLanguage === 'es' ? 'Change to English' : 'Cambiar a Español'"
+    [title]="currentLanguage === 'es' ? 'EN' : 'ES'">
+    <span class="language-code">{{ currentLanguage === 'es' ? 'EN' : 'ES' }}</span>
+  </button>
 </div>
 
