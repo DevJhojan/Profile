@@ -16,7 +16,7 @@ export class AuthInitService {
   async initializeUser(): Promise<{ success: boolean; message: string }> {
     try {
       // Intentar leer el archivo de credenciales desde public
-      let response: Response;
+      let response: Response | null = null;
       let credentialsPath = '';
       
       // Intentar diferentes rutas
@@ -29,8 +29,9 @@ export class AuthInitService {
       for (const path of paths) {
         try {
           console.log('Intentando leer credenciales desde:', path);
-          response = await fetch(path);
-          if (response.ok) {
+          const tempResponse = await fetch(path);
+          if (tempResponse.ok) {
+            response = tempResponse;
             credentialsPath = path;
             break;
           }
