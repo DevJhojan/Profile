@@ -99,12 +99,14 @@ export class PortfolioComponent implements OnInit {
   editingSkillObjectIndex = signal<number | null>(null);
   editingContentIndex = signal<number | null>(null);
   editingContentItemIndex = signal<number | null>(null);
+  editingCvUrl = signal<boolean>(false);
   
   // Formularios temporales
   editProjectForm = signal<Partial<ICardProjects>>({});
   editSkillForm = signal<string>('');
   editSkillObjectForm = signal<{ name: string; img: string; url?: string }>({ name: '', img: '', url: '' });
   editContentForm = signal<Partial<any>>({});
+  editCvUrlForm = signal<string>('');
   
   // Estados para agregar nuevas habilidades
   addingSkillItem = signal<number | null>(null);
