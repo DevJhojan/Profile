@@ -6,6 +6,7 @@ import { LanguageService } from '../../services/language.service';
 import { AuthService } from '../../services/auth.service';
 import { PortfolioService } from '../../services/portfolio.service';
 import { DataMigrationService } from '../../services/data-migration.service';
+import { TranslationService } from '../../services/translation.service';
 import { ModalComponent } from '../modal/modal.component';
 import type { ICardProjects, ICardNormal, IContent } from '@models';
 import { TypeApp, Subcontent } from '@models';
@@ -23,6 +24,7 @@ export class PortfolioComponent implements OnInit {
   private authService = inject(AuthService);
   private portfolioService = inject(PortfolioService);
   private dataMigrationService = inject(DataMigrationService);
+  private translationService = inject(TranslationService);
   
   async ngOnInit(): Promise<void> {
     this.themeService.currentTheme();
@@ -41,6 +43,49 @@ export class PortfolioComponent implements OnInit {
   
   // Traducciones
   t = computed(() => this.languageService.getTranslations());
+  
+  // Habilidades traducidas
+  translatedSkills = computed(() => {
+    const currentSkills = this.skills();
+    const lang = this.languageService.currentLanguage();
+    return currentSkills.map(skillGroup => ({
+      ...skillGroup,
+      h2: this.getSkillGroupTitle(skillGroup.h2),
+      items: skillGroup.items?.map(item => this.translationService.translate(item)),
+      itemsObject: skillGroup.itemsObject?.map(item => ({
+        ...item,
+        name: this.translationService.translate(item.name)
+      }))
+    }));
+  });
+  
+  // Contenidos traducidos
+  translatedContents = computed(() => {
+    const currentContents = this.allContents();
+    const lang = this.languageService.currentLanguage();
+    return currentContents.map(content => ({
+      ...content,
+      titleButton: this.translationService.translateContentTitle(content.titleButton),
+      listContent: content.listContent?.map(item => ({
+        ...item,
+        subTitle: this.translationService.translate(item.subTitle),
+        description: this.translationService.translate(item.description),
+        date: this.translationService.translateDate(item.date)
+      }))
+    }));
+  });
+  
+  // Función para obtener el título traducido de habilidades
+  getSkillGroupTitle(h2: string): string {
+    const translations = this.t();
+    if (h2 === 'Herramientas' || h2 === 'Tooling') {
+      return translations.tooling;
+    }
+    if (h2 === 'Habilidades blandas' || h2 === 'Soft Skills') {
+      return translations.softSkills;
+    }
+    return h2;
+  }
   
   // Estado del modal
   isModalOpen = false;

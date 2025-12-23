@@ -142,7 +142,7 @@
         <!-- Sección única de habilidades -->
         <div class="skill-group">
           <!-- Habilidades Duras -->
-          @for (skillGroup of skills(); track skillGroup.h2; let i = $index) {
+          @for (skillGroup of translatedSkills(); track skillGroup.h2; let i = $index) {
             @if (skillGroup.itemsObject) {
               <div class="skill-subsection">
                 <div class="skill-subsection-header">
@@ -196,7 +196,7 @@
           }
           
           <!-- Habilidades Blandas -->
-          @for (skillGroup of skills(); track skillGroup.h2; let i = $index) {
+          @for (skillGroup of translatedSkills(); track skillGroup.h2; let i = $index) {
             @if (skillGroup.items) {
               <div class="skill-subsection">
                 <div class="skill-subsection-header">
@@ -250,7 +250,7 @@
   <app-modal
     [isOpen]="isModalOpen"
     [title]="t().modalTitle"
-    [contents]="allContents()"
+    [contents]="translatedContents()"
     [isEditMode]="isAuthenticated"
     [editingContentIndex]="editingContentIndex()"
     [editingContentItemIndex]="editingContentItemIndex()"

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ThemeService } from '../../services/theme.service';
 import { LanguageService } from '../../services/language.service';
 import { PortfolioService } from '../../services/portfolio.service';
+import { TranslationService } from '../../services/translation.service';
 import { ModalComponent } from '../modal/modal.component';
 import type { ICardProjects, ICardNormal, IContent } from '@models';
 
@@ -17,6 +18,7 @@ export class PortfolioComponent implements OnInit {
   private themeService = inject(ThemeService);
   private languageService = inject(LanguageService);
   private portfolioService = inject(PortfolioService);
+  private translationService = inject(TranslationService);
   
   ngOnInit(): void {
     this.themeService.currentTheme();
@@ -30,6 +32,35 @@ export class PortfolioComponent implements OnInit {
   
   // Traducciones
   t = computed(() => this.languageService.getTranslations());
+  
+  // Habilidades traducidas
+  translatedSkills = computed(() => {
+    const currentSkills = this.skills();
+    return currentSkills.map(skillGroup => ({
+      ...skillGroup,
+      h2: this.getSkillGroupTitle(skillGroup.h2),
+      items: skillGroup.items?.map(item => this.translationService.translate(item)),
+      itemsObject: skillGroup.itemsObject?.map(item => ({
+        ...item,
+        name: this.translationService.translate(item.name)
+      }))
+    }));
+  });
+  
+  // Contenidos traducidos
+  translatedContents = computed(() => {
+    const currentContents = this.allContents();
+    return currentContents.map(content => ({
+      ...content,
+      titleButton: this.translationService.translateContentTitle(content.titleButton),
+      listContent: content.listContent?.map(item => ({
+        ...item,
+        subTitle: this.translationService.translate(item.subTitle),
+        description: this.translationService.translate(item.description),
+        date: this.translationService.translateDate(item.date)
+      }))
+    }));
+  });
   
   // Función para obtener el título traducido de habilidades
   getSkillGroupTitle(h2: string): string {
