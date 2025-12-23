@@ -11,33 +11,34 @@
         [alt]="currentTheme === 'dark' ? t().changeThemeToLight : t().changeThemeToDark"
         class="theme-icon">
     </button>
+    @if (editingCvUrl()) {
+      <div class="cv-url-edit-form">
+        <input type="text" [(ngModel)]="editCvUrlForm" placeholder="URL del CV" class="cv-url-input">
+        <div class="cv-url-actions">
+          <button class="save-btn" (click)="saveCvUrl()">Guardar</button>
+          @if (cvUrl()) {
+            <button class="delete-btn" (click)="deleteCvUrl()" title="Eliminar URL">🗑️</button>
+          }
+          <button class="cancel-btn" (click)="cancelEditCvUrl()">Cancelar</button>
+        </div>
+      </div>
+    } @else {
+      @if (cvUrl()) {
+        <a [href]="cvUrl()" target="_blank" class="cv-download-btn" title="Descargar curriculum">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span class="cv-tooltip">Descargar curriculum</span>
+        </a>
+      }
+      @if (isAuthenticated) {
+        <button class="edit-cv-url-btn" (click)="startEditCvUrl()" title="Editar URL del CV">✏️</button>
+      }
+    }
     <div class="name-section">
       <h1 class="full-name">{{ fullName }}</h1>
-      @if (editingCvUrl()) {
-        <div class="cv-url-edit-form">
-          <input type="text" [(ngModel)]="editCvUrlForm" placeholder="URL del CV" class="cv-url-input">
-          <div class="cv-url-actions">
-            <button class="save-btn" (click)="saveCvUrl()">Guardar</button>
-            @if (cvUrl()) {
-              <button class="delete-btn" (click)="deleteCvUrl()" title="Eliminar URL">🗑️</button>
-            }
-            <button class="cancel-btn" (click)="cancelEditCvUrl()">Cancelar</button>
-          </div>
-        </div>
-      } @else {
-        @if (cvUrl()) {
-          <a [href]="cvUrl()" target="_blank" class="cv-download-btn" title="Descargar curriculum">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-              <polyline points="7 10 12 15 17 10"></polyline>
-              <line x1="12" y1="15" x2="12" y2="3"></line>
-            </svg>
-          </a>
-        }
-        @if (isAuthenticated) {
-          <button class="edit-cv-url-btn" (click)="startEditCvUrl()" title="Editar URL del CV">✏️</button>
-        }
-      }
     </div>
   </header>
 

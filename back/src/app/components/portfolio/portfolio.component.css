@@ -57,7 +57,6 @@
 .name-section {
   display: flex;
   align-items: center;
-  gap: 1rem;
   margin-left: auto;
 }
 
@@ -106,6 +105,32 @@
   width: 20px;
   height: 20px;
   stroke: currentColor;
+}
+
+/* Tooltip para el botón de descarga */
+.cv-tooltip {
+  position: absolute;
+  bottom: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.5rem 0.75rem;
+  background: var(--buttonBg);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--buttonBorder);
+  border-radius: 6px;
+  color: var(--title);
+  font-size: 0.85rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  box-shadow: var(--shadowMid);
+  z-index: 1000;
+}
+
+.cv-download-btn:hover .cv-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-4px);
 }
 
 .edit-cv-url-btn {
