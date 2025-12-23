@@ -1,18 +1,17 @@
 <div class="portfolio-container">
   <!-- Header -->
   <header class="portfolio-header">
-    <button 
-      class="theme-toggle-btn" 
+    <button
+      class="theme-toggle-btn"
       (click)="toggleTheme()"
       [attr.aria-label]="t().changeThemeToLight"
       [title]="t().changeTheme">
-      <img 
-        [src]="currentTheme === 'dark' ? 'assets/img/Cambio_tema/sun.png' : 'assets/img/Cambio_tema/moon.png'" 
+      <img
+        [src]="currentTheme === 'dark' ? 'assets/img/Cambio_tema/sun.png' : 'assets/img/Cambio_tema/moon.png'"
         [alt]="currentTheme === 'dark' ? t().changeThemeToLight : t().changeThemeToDark"
         class="theme-icon">
     </button>
     <div class="name-section">
-      <h1 class="full-name">{{ fullName }}</h1>
       @if (cvUrl()) {
         <a [href]="cvUrl()" target="_blank" class="cv-download-btn" title="Descargar curriculum">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -22,6 +21,7 @@
           </svg>
         </a>
       }
+      <h1 class="full-name">{{ fullName }}</h1>
     </div>
   </header>
 
@@ -61,12 +61,12 @@
         <h2>{{ t().aboutMe }}</h2>
         <span class="btn-icon">→</span>
       </button>
-      
+
       <!-- Imagen de Perfil -->
       <div class="profile-image-container">
-        <img 
-          [src]="profileImage" 
-          alt="Jhojan Danilo Toro Perez" 
+        <img
+          [src]="profileImage"
+          alt="Jhojan Danilo Toro Perez"
           class="profile-image"
           loading="lazy">
       </div>
@@ -113,8 +113,8 @@
   </app-modal>
 
   <!-- Botón de cambio de idioma -->
-  <button 
-    class="language-toggle-btn" 
+  <button
+    class="language-toggle-btn"
     (click)="toggleLanguage()"
     [attr.aria-label]="currentLanguage === 'es' ? 'Change to English' : 'Cambiar a Español'"
     [title]="currentLanguage === 'es' ? 'EN' : 'ES'">
