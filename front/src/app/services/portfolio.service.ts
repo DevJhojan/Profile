@@ -15,16 +15,19 @@ export class PortfolioService {
   projects = signal<ICardProjects[]>([]);
   skills = signal<ICardNormal[]>([]);
   contents = signal<IContent[]>([]);
+  cvUrl = signal<string>('');
   isLoading = signal<boolean>(true);
 
   private projectsRef: DatabaseReference;
   private skillsRef: DatabaseReference;
   private contentsRef: DatabaseReference;
+  private cvUrlRef: DatabaseReference;
 
   constructor() {
     this.projectsRef = ref(database, 'portfolio/projects');
     this.skillsRef = ref(database, 'portfolio/skills');
     this.contentsRef = ref(database, 'portfolio/contents');
+    this.cvUrlRef = ref(database, 'portfolio/cvUrl');
 
     // Suscribirse a cambios en tiempo real (solo lectura)
     this.subscribeToChanges();
@@ -55,6 +58,14 @@ export class PortfolioService {
       this.contents.set(data || []);
     }, (error) => {
       console.error('Error al cargar contenidos:', error);
+    });
+
+    // Escuchar cambios en URL del CV
+    onValue(this.cvUrlRef, (snapshot) => {
+      const data = snapshot.val();
+      this.cvUrl.set(data || '');
+    }, (error) => {
+      console.error('Error al cargar URL del CV:', error);
     });
   }
 }

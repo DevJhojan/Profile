@@ -40,6 +40,7 @@ export class PortfolioComponent implements OnInit {
   projects = computed(() => this.portfolioService.projects());
   skills = computed(() => this.portfolioService.skills());
   allContents = computed(() => this.portfolioService.contents());
+  cvUrl = this.portfolioService.cvUrl;
   
   // Traducciones
   t = computed(() => this.languageService.getTranslations());
@@ -411,6 +412,32 @@ export class PortfolioComponent implements OnInit {
         await this.portfolioService.addContentItem(contentIndex, form);
         this.cancelEditContentItem();
       }
+    }
+  }
+
+  // ===== EDICIÓN DE CV URL =====
+  startEditCvUrl(): void {
+    this.editCvUrlForm.set(this.cvUrl() || '');
+    this.editingCvUrl.set(true);
+  }
+
+  cancelEditCvUrl(): void {
+    this.editingCvUrl.set(false);
+    this.editCvUrlForm.set('');
+  }
+
+  async saveCvUrl(): Promise<void> {
+    const url = this.editCvUrlForm().trim();
+    if (url) {
+      await this.portfolioService.updateCvUrl(url);
+      this.cancelEditCvUrl();
+    }
+  }
+
+  downloadCv(): void {
+    const url = this.cvUrl();
+    if (url) {
+      window.open(url, '_blank');
     }
   }
 }

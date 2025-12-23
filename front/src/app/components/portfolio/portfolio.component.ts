@@ -28,6 +28,7 @@ export class PortfolioComponent implements OnInit {
   projects = this.portfolioService.projects;
   skills = this.portfolioService.skills;
   allContents = this.portfolioService.contents;
+  cvUrl = this.portfolioService.cvUrl;
   isLoading = this.portfolioService.isLoading;
   
   // Traducciones

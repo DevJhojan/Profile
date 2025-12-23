@@ -54,17 +54,85 @@
   object-fit: contain;
 }
 
+.name-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-left: auto;
+}
+
 .full-name {
   font-size: 2.5rem;
   font-weight: 700;
   color: var(--title);
   text-align: right;
   margin: 0;
-  margin-left: auto;
   text-shadow: var(--shadowStart);
   letter-spacing: 2px;
   font-family: 'Courier New', 'Consolas', 'Monaco', 'Lucida Console', monospace;
   text-transform: uppercase;
+}
+
+.cv-download-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: 2px solid var(--buttonBorder);
+  background: var(--buttonBg);
+  backdrop-filter: blur(10px);
+  color: var(--title);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadowStart);
+  text-decoration: none;
+  position: relative;
+}
+
+.cv-download-btn:hover {
+  background: var(--buttonBgHover);
+  border-color: var(--title);
+  transform: scale(1.1) translateY(-2px);
+  box-shadow: var(--shadowMid);
+}
+
+.cv-download-btn:active {
+  transform: scale(0.95);
+}
+
+.cv-download-btn svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+}
+
+/* Tooltip para el botón de descarga */
+.cv-download-btn::after {
+  content: "Descargar curriculum";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+  padding: 0.5rem 0.75rem;
+  background: var(--buttonBg);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--buttonBorder);
+  border-radius: 6px;
+  color: var(--title);
+  font-size: 0.85rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  box-shadow: var(--shadowMid);
+  z-index: 1000;
+}
+
+.cv-download-btn:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-12px);
 }
 
 /* Main - 3 Columnas */

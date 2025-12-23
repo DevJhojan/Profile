@@ -26,16 +26,19 @@ export class PortfolioService {
   projects = signal<ICardProjects[]>([]);
   skills = signal<ICardNormal[]>([]);
   contents = signal<IContent[]>([]);
+  cvUrl = signal<string>('');
   isLoading = signal<boolean>(false);
 
   private projectsRef: DatabaseReference;
   private skillsRef: DatabaseReference;
   private contentsRef: DatabaseReference;
+  private cvUrlRef: DatabaseReference;
 
   constructor() {
     this.projectsRef = ref(database, 'portfolio/projects');
     this.skillsRef = ref(database, 'portfolio/skills');
     this.contentsRef = ref(database, 'portfolio/contents');
+    this.cvUrlRef = ref(database, 'portfolio/cvUrl');
 
     // Suscribirse a cambios en tiempo real
     this.subscribeToChanges();
@@ -56,6 +59,31 @@ export class PortfolioService {
       const data = snapshot.val();
       this.contents.set(data || []);
     });
+
+    onValue(this.cvUrlRef, (snapshot) => {
+      const data = snapshot.val();
+      this.cvUrl.set(data || '');
+    });
+  }
+
+  // ===== CV URL =====
+  async loadCvUrl(): Promise<void> {
+    try {
+      const snapshot = await get(this.cvUrlRef);
+      const data = snapshot.val();
+      this.cvUrl.set(data || '');
+    } catch (error) {
+      console.error('Error al cargar URL del CV:', error);
+    }
+  }
+
+  async updateCvUrl(url: string): Promise<void> {
+    try {
+      await set(this.cvUrlRef, url);
+    } catch (error) {
+      console.error('Error al actualizar URL del CV:', error);
+      throw error;
+    }
   }
 
   // ===== PROYECTOS =====
@@ -283,7 +311,8 @@ export class PortfolioService {
     await Promise.all([
       this.loadProjects(),
       this.loadSkills(),
-      this.loadContents()
+      this.loadContents(),
+      this.loadCvUrl()
     ]);
   }
 
@@ -292,6 +321,7 @@ export class PortfolioService {
     off(this.projectsRef);
     off(this.skillsRef);
     off(this.contentsRef);
+    off(this.cvUrlRef);
   }
 }
 
