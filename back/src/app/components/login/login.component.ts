@@ -61,12 +61,21 @@ export class LoginComponent implements OnInit {
     this.isLoading.set(true);
     this.errorMessage.set('');
 
+    // Pequeño delay para evitar rate limiting
+    await new Promise(resolve => setTimeout(resolve, 100));
+
     const result = await this.authService.login(this.email, this.password);
 
     if (result.success) {
       this.router.navigate(['/']);
     } else {
       this.errorMessage.set(result.error || 'Error al iniciar sesión');
+      
+      // Si es error de too-many-requests, permitir reintento después de un momento
+      if (result.error?.includes('Muchos intentos')) {
+        // No bloqueamos, solo mostramos el mensaje
+        // El usuario puede intentar nuevamente
+      }
     }
 
     this.isLoading.set(false);

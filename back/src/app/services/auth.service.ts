@@ -31,6 +31,10 @@ export class AuthService {
     try {
       this.isLoading.set(true);
       console.log('Intentando iniciar sesión con:', email);
+      
+      // Intentar login con un pequeño delay para evitar rate limiting
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       console.log('Login exitoso:', userCredential.user.email);
       return { success: true };
@@ -56,10 +60,15 @@ export class AuthService {
           errorMessage = 'Credenciales inválidas (email o contraseña incorrectos)';
           break;
         case 'auth/too-many-requests':
-          errorMessage = 'Demasiados intentos fallidos. Intenta más tarde';
+          // Mensaje más amigable y sugerencia de esperar
+          errorMessage = 'Muchos intentos recientes. Por favor, espera un momento e intenta nuevamente';
+          // No bloqueamos, solo informamos
+          break;
+        case 'auth/network-request-failed':
+          errorMessage = 'Error de conexión. Verifica tu conexión a internet';
           break;
         default:
-          errorMessage = authError.message || `Error desconocido: ${authError.code}`;
+          errorMessage = authError.message || `Error: ${authError.code}`;
       }
       
       return { success: false, error: errorMessage };

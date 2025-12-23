@@ -63,6 +63,10 @@ export class AuthInitService {
       // Intentar iniciar sesión primero
       try {
         console.log('Intentando autenticar con:', credentials.email);
+        
+        // Pequeño delay para evitar rate limiting
+        await new Promise(resolve => setTimeout(resolve, 200));
+        
         await signInWithEmailAndPassword(auth, credentials.email, credentials.password);
         console.log('✅ Usuario autenticado exitosamente desde credentials_personal.json');
         return { 
@@ -76,6 +80,8 @@ export class AuthInitService {
         if (signInError.code === 'auth/user-not-found' || signInError.code === 'auth/invalid-credential') {
           console.log('Usuario no encontrado, intentando registrar...');
           try {
+            // Delay antes de registrar también
+            await new Promise(resolve => setTimeout(resolve, 200));
             await createUserWithEmailAndPassword(auth, credentials.email, credentials.password);
             console.log('✅ Usuario registrado exitosamente desde credentials_personal.json');
             return { 
@@ -87,6 +93,23 @@ export class AuthInitService {
             return { 
               success: false, 
               message: `Error al registrar usuario: ${registerError.message || registerError.code}` 
+            };
+          }
+        } else if (signInError.code === 'auth/too-many-requests') {
+          // Si hay demasiados intentos, esperar un poco y reintentar una vez
+          console.log('⚠️ Demasiados intentos, esperando antes de reintentar...');
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          try {
+            await signInWithEmailAndPassword(auth, credentials.email, credentials.password);
+            console.log('✅ Usuario autenticado exitosamente después de reintento');
+            return { 
+              success: true, 
+              message: 'Usuario autenticado exitosamente' 
+            };
+          } catch (retryError: any) {
+            return { 
+              success: false, 
+              message: 'Por favor, espera unos minutos antes de intentar nuevamente' 
             };
           }
         } else {
