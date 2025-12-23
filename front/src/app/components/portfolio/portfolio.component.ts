@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, computed } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, computed, signal, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ThemeService } from '../../services/theme.service';
 import { LanguageService } from '../../services/language.service';
@@ -14,7 +14,7 @@ import type { ICardProjects, ICardNormal, IContent } from '@models';
   templateUrl: './portfolio.component.html',
   styleUrl: './portfolio.component.css'
 })
-export class PortfolioComponent implements OnInit {
+export class PortfolioComponent implements OnInit, OnDestroy {
   private themeService = inject(ThemeService);
   private languageService = inject(LanguageService);
   private portfolioService = inject(PortfolioService);
@@ -30,6 +30,39 @@ export class PortfolioComponent implements OnInit {
   allContents = this.portfolioService.contents;
   cvUrl = this.portfolioService.cvUrl;
   isLoading = this.portfolioService.isLoading;
+  
+  // Ordenamiento de proyectos
+  projectSortOrder = signal<'default' | 'name-asc' | 'name-desc' | 'state-asc' | 'state-desc' | 'recent-first' | 'oldest-first'>('default');
+  sortedProjects = computed(() => {
+    const projectsList = this.projects();
+    const order = this.projectSortOrder();
+    
+    if (order === 'default') {
+      return projectsList;
+    }
+    
+    switch (order) {
+      case 'name-asc':
+        return [...projectsList].sort((a, b) => a.name.localeCompare(b.name));
+      case 'name-desc':
+        return [...projectsList].sort((a, b) => b.name.localeCompare(a.name));
+      case 'state-asc':
+        return [...projectsList].sort((a, b) => a.state.localeCompare(b.state));
+      case 'state-desc':
+        return [...projectsList].sort((a, b) => b.state.localeCompare(a.state));
+      case 'recent-first':
+        // Los más recientes primero (últimos en el array original = índice más alto)
+        return [...projectsList].reverse();
+      case 'oldest-first':
+        // Los más antiguos primero (primeros en el array original = índice más bajo)
+        return [...projectsList];
+      default:
+        return projectsList;
+    }
+  });
+  
+  // Menú de ordenamiento
+  showSortMenu = signal<boolean>(false);
   
   // Traducciones
   t = computed(() => this.languageService.getTranslations());
@@ -112,6 +145,29 @@ export class PortfolioComponent implements OnInit {
     if (url) {
       window.open(url, '_blank');
     }
+  }
+  
+  // ===== ORDENAMIENTO DE PROYECTOS =====
+  toggleSortMenu(): void {
+    this.showSortMenu.update(val => !val);
+  }
+
+  setSortOrder(order: 'default' | 'name-asc' | 'name-desc' | 'state-asc' | 'state-desc' | 'recent-first' | 'oldest-first'): void {
+    this.projectSortOrder.set(order);
+    this.showSortMenu.set(false);
+  }
+  
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.sort-dropdown')) {
+      this.showSortMenu.set(false);
+    }
+  }
+
+  ngOnDestroy(): void {
+    // Cerrar el menú si está abierto
+    this.showSortMenu.set(false);
   }
   
   openModal(): void {

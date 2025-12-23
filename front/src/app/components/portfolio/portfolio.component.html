@@ -32,12 +32,46 @@
     <section class="portfolio-column projects-column">
       <div class="column-header">
         <h2>{{ t().projects }}</h2>
+        <div class="header-actions">
+          <div class="sort-dropdown">
+            <button class="sort-btn" (click)="toggleSortMenu()" title="Ordenar proyectos">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 6h18M7 12h10M11 18h2"/>
+              </svg>
+            </button>
+            @if (showSortMenu()) {
+              <div class="sort-menu">
+                <button class="sort-option" [class.active]="projectSortOrder() === 'default'" (click)="setSortOrder('default')">
+                  Por defecto
+                </button>
+                <button class="sort-option" [class.active]="projectSortOrder() === 'name-asc'" (click)="setSortOrder('name-asc')">
+                  Nombre A-Z
+                </button>
+                <button class="sort-option" [class.active]="projectSortOrder() === 'name-desc'" (click)="setSortOrder('name-desc')">
+                  Nombre Z-A
+                </button>
+                <button class="sort-option" [class.active]="projectSortOrder() === 'state-asc'" (click)="setSortOrder('state-asc')">
+                  Estado A-Z
+                </button>
+                <button class="sort-option" [class.active]="projectSortOrder() === 'state-desc'" (click)="setSortOrder('state-desc')">
+                  Estado Z-A
+                </button>
+                <button class="sort-option" [class.active]="projectSortOrder() === 'recent-first'" (click)="setSortOrder('recent-first')">
+                  Más reciente primero
+                </button>
+                <button class="sort-option" [class.active]="projectSortOrder() === 'oldest-first'" (click)="setSortOrder('oldest-first')">
+                  Más antiguo primero
+                </button>
+              </div>
+            }
+          </div>
+        </div>
       </div>
       <div class="projects-list">
         @if (isLoading()) {
           <div class="loading-message">Cargando proyectos...</div>
         } @else {
-          @for (project of projects(); track project.name) {
+          @for (project of sortedProjects(); track project.name) {
             <div class="project-card" (click)="openProject(project.url)">
               <div class="project-image">
                 <img [src]="project.img" [alt]="project.name" loading="lazy">

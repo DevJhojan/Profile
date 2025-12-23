@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, computed, signal } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, computed, signal, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ThemeService } from '../../services/theme.service';
@@ -18,7 +18,7 @@ import { TypeApp, Subcontent } from '@models';
   templateUrl: './portfolio.component.html',
   styleUrl: './portfolio.component.css'
 })
-export class PortfolioComponent implements OnInit {
+export class PortfolioComponent implements OnInit, OnDestroy {
   private themeService = inject(ThemeService);
   private languageService = inject(LanguageService);
   private authService = inject(AuthService);
@@ -41,6 +41,39 @@ export class PortfolioComponent implements OnInit {
   skills = computed(() => this.portfolioService.skills());
   allContents = computed(() => this.portfolioService.contents());
   cvUrl = this.portfolioService.cvUrl;
+  
+  // Ordenamiento de proyectos
+  projectSortOrder = signal<'default' | 'name-asc' | 'name-desc' | 'state-asc' | 'state-desc' | 'recent-first' | 'oldest-first'>('default');
+  sortedProjects = computed(() => {
+    const projectsList = this.projects();
+    const order = this.projectSortOrder();
+    
+    if (order === 'default') {
+      return projectsList;
+    }
+    
+    // Crear una copia con el índice original para ordenamiento por fecha
+    const projectsWithIndex = projectsList.map((project, index) => ({ project, originalIndex: index }));
+    
+    switch (order) {
+      case 'name-asc':
+        return projectsList.sort((a, b) => a.name.localeCompare(b.name));
+      case 'name-desc':
+        return projectsList.sort((a, b) => b.name.localeCompare(a.name));
+      case 'state-asc':
+        return projectsList.sort((a, b) => a.state.localeCompare(b.state));
+      case 'state-desc':
+        return projectsList.sort((a, b) => b.state.localeCompare(a.state));
+      case 'recent-first':
+        // Los más recientes primero (últimos en el array original = índice más alto)
+        return [...projectsList].reverse();
+      case 'oldest-first':
+        // Los más antiguos primero (primeros en el array original = índice más bajo)
+        return [...projectsList];
+      default:
+        return projectsList;
+    }
+  });
   
   // Traducciones
   t = computed(() => this.languageService.getTranslations());
@@ -115,6 +148,9 @@ export class PortfolioComponent implements OnInit {
   newSkillType = signal<'blanda' | 'dura'>('blanda');
   newSkillForm = signal<{ name: string; img: string; url: string }>({ name: '', img: '', url: '' });
   
+  // Menú de ordenamiento
+  showSortMenu = signal<boolean>(false);
+  
   // Nombre completo
   fullName = 'Jhojan Danilo Toro Perez';
   
@@ -167,10 +203,14 @@ export class PortfolioComponent implements OnInit {
   }
 
   // ===== EDICIÓN DE PROYECTOS =====
-  startEditProject(index: number): void {
-    const project = this.projects()[index];
-    this.editProjectForm.set({ ...project });
-    this.editingProjectIndex.set(index);
+  startEditProject(projectName: string): void {
+    const projects = this.projects();
+    const index = projects.findIndex(p => p.name === projectName);
+    if (index !== -1) {
+      const project = projects[index];
+      this.editProjectForm.set({ ...project });
+      this.editingProjectIndex.set(index);
+    }
   }
 
   cancelEditProject(): void {
@@ -178,19 +218,31 @@ export class PortfolioComponent implements OnInit {
     this.editProjectForm.set({});
   }
 
-  async saveProject(index: number | null): Promise<void> {
-    if (index === null) return;
-    const form = this.editProjectForm();
-    if (form.name && form.tool && form.url) {
-      await this.portfolioService.updateProject(index, form as ICardProjects);
-      this.cancelEditProject();
+  async saveProject(projectName: string): Promise<void> {
+    const projects = this.projects();
+    const index = projects.findIndex(p => p.name === projectName);
+    if (index !== -1) {
+      const form = this.editProjectForm();
+      if (form.name && form.tool && form.url) {
+        await this.portfolioService.updateProject(index, form as ICardProjects);
+        this.cancelEditProject();
+      }
     }
   }
 
-  async deleteProject(index: number): Promise<void> {
-    if (confirm('¿Estás seguro de eliminar este proyecto?')) {
+  async deleteProject(projectName: string): Promise<void> {
+    const projects = this.projects();
+    const index = projects.findIndex(p => p.name === projectName);
+    if (index !== -1 && confirm('¿Estás seguro de eliminar este proyecto?')) {
       await this.portfolioService.deleteProject(index);
     }
+  }
+  
+  getEditingProjectName(): string | null {
+    const index = this.editingProjectIndex();
+    if (index === null || index === -1) return null;
+    const projects = this.projects();
+    return projects[index]?.name || null;
   }
 
   startAddProject(): void {
@@ -448,5 +500,28 @@ export class PortfolioComponent implements OnInit {
     if (url) {
       window.open(url, '_blank');
     }
+  }
+
+  // ===== ORDENAMIENTO DE PROYECTOS =====
+  toggleSortMenu(): void {
+    this.showSortMenu.update(val => !val);
+  }
+
+  setSortOrder(order: 'default' | 'name-asc' | 'name-desc' | 'state-asc' | 'state-desc' | 'recent-first' | 'oldest-first'): void {
+    this.projectSortOrder.set(order);
+    this.showSortMenu.set(false);
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.sort-dropdown')) {
+      this.showSortMenu.set(false);
+    }
+  }
+
+  ngOnDestroy(): void {
+    // Cerrar el menú si está abierto
+    this.showSortMenu.set(false);
   }
 }

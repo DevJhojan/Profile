@@ -48,9 +48,43 @@
     <section class="portfolio-column projects-column">
       <div class="column-header">
         <h2>{{ t().projects }}</h2>
-        @if (isEditMode()) {
-          <button class="edit-add-btn" (click)="startAddProject()" title="Agregar proyecto">+</button>
-        }
+        <div class="header-actions">
+          <div class="sort-dropdown">
+            <button class="sort-btn" (click)="toggleSortMenu()" title="Ordenar proyectos">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 6h18M7 12h10M11 18h2"/>
+              </svg>
+            </button>
+            @if (showSortMenu()) {
+              <div class="sort-menu">
+                <button class="sort-option" [class.active]="projectSortOrder() === 'default'" (click)="setSortOrder('default')">
+                  Por defecto
+                </button>
+                <button class="sort-option" [class.active]="projectSortOrder() === 'name-asc'" (click)="setSortOrder('name-asc')">
+                  Nombre A-Z
+                </button>
+                <button class="sort-option" [class.active]="projectSortOrder() === 'name-desc'" (click)="setSortOrder('name-desc')">
+                  Nombre Z-A
+                </button>
+                <button class="sort-option" [class.active]="projectSortOrder() === 'state-asc'" (click)="setSortOrder('state-asc')">
+                  Estado A-Z
+                </button>
+                <button class="sort-option" [class.active]="projectSortOrder() === 'state-desc'" (click)="setSortOrder('state-desc')">
+                  Estado Z-A
+                </button>
+                <button class="sort-option" [class.active]="projectSortOrder() === 'recent-first'" (click)="setSortOrder('recent-first')">
+                  Más reciente primero
+                </button>
+                <button class="sort-option" [class.active]="projectSortOrder() === 'oldest-first'" (click)="setSortOrder('oldest-first')">
+                  Más antiguo primero
+                </button>
+              </div>
+            }
+          </div>
+          @if (isEditMode()) {
+            <button class="edit-add-btn" (click)="startAddProject()" title="Agregar proyecto">+</button>
+          }
+        </div>
       </div>
       <div class="projects-list">
         @if (editingProjectIndex() === -1) {
@@ -69,8 +103,8 @@
           </div>
         }
         
-        @for (project of projects(); track project.name; let i = $index) {
-          @if (editingProjectIndex() === i) {
+        @for (project of sortedProjects(); track project.name; let i = $index) {
+          @if (getEditingProjectName() === project.name) {
             <!-- Formulario de edición -->
             <div class="edit-form-card">
               <h4>Editar Proyecto</h4>
@@ -80,7 +114,7 @@
               <input type="text" [(ngModel)]="editProjectForm().state" placeholder="Estado" class="form-input">
               <input type="text" [(ngModel)]="editProjectForm().img" placeholder="Imagen" class="form-input">
               <div class="edit-actions">
-                <button class="save-btn" (click)="saveProject(i)">Guardar</button>
+                <button class="save-btn" (click)="saveProject(project.name)">Guardar</button>
                 <button class="cancel-btn" (click)="cancelEditProject()">Cancelar</button>
               </div>
             </div>
@@ -88,8 +122,8 @@
             <div class="project-card" [class.edit-mode]="isEditMode()">
               @if (isEditMode()) {
                 <div class="edit-controls">
-                  <button class="edit-btn" (click)="startEditProject(i); $event.stopPropagation()" title="Editar">✏️</button>
-                  <button class="delete-btn" (click)="deleteProject(i); $event.stopPropagation()" title="Eliminar">🗑️</button>
+                  <button class="edit-btn" (click)="startEditProject(project.name); $event.stopPropagation()" title="Editar">✏️</button>
+                  <button class="delete-btn" (click)="deleteProject(project.name); $event.stopPropagation()" title="Eliminar">🗑️</button>
                 </div>
               }
               <div class="project-content" (click)="openProject(project.url)">
