@@ -144,6 +144,19 @@ export class PortfolioService {
     }
   }
 
+  async updateSkillItem(skillGroupIndex: number, itemIndex: number, skillItem: string): Promise<void> {
+    try {
+      const currentSkills = this.skills();
+      if (currentSkills[skillGroupIndex]?.items && currentSkills[skillGroupIndex].items) {
+        currentSkills[skillGroupIndex].items[itemIndex] = skillItem;
+        await set(this.skillsRef, currentSkills);
+      }
+    } catch (error) {
+      console.error('Error al actualizar habilidad:', error);
+      throw error;
+    }
+  }
+
   async deleteSkillItem(skillGroupIndex: number, itemIndex: number): Promise<void> {
     try {
       const currentSkills = this.skills();
@@ -153,6 +166,49 @@ export class PortfolioService {
       }
     } catch (error) {
       console.error('Error al eliminar habilidad:', error);
+      throw error;
+    }
+  }
+
+  // ===== HABILIDADES DURAS (itemsObject) =====
+  async addSkillObject(skillGroupIndex: number, skillObject: { name: string; img: string; url?: string }): Promise<void> {
+    try {
+      const currentSkills = this.skills();
+      if (currentSkills[skillGroupIndex]?.itemsObject) {
+        currentSkills[skillGroupIndex].itemsObject = [
+          ...(currentSkills[skillGroupIndex].itemsObject || []),
+          skillObject
+        ];
+        await set(this.skillsRef, currentSkills);
+      }
+    } catch (error) {
+      console.error('Error al agregar habilidad dura:', error);
+      throw error;
+    }
+  }
+
+  async updateSkillObject(skillGroupIndex: number, itemIndex: number, skillObject: { name: string; img: string; url?: string }): Promise<void> {
+    try {
+      const currentSkills = this.skills();
+      if (currentSkills[skillGroupIndex]?.itemsObject && currentSkills[skillGroupIndex].itemsObject) {
+        currentSkills[skillGroupIndex].itemsObject[itemIndex] = skillObject;
+        await set(this.skillsRef, currentSkills);
+      }
+    } catch (error) {
+      console.error('Error al actualizar habilidad dura:', error);
+      throw error;
+    }
+  }
+
+  async deleteSkillObject(skillGroupIndex: number, itemIndex: number): Promise<void> {
+    try {
+      const currentSkills = this.skills();
+      if (currentSkills[skillGroupIndex]?.itemsObject) {
+        currentSkills[skillGroupIndex].itemsObject?.splice(itemIndex, 1);
+        await set(this.skillsRef, currentSkills);
+      }
+    } catch (error) {
+      console.error('Error al eliminar habilidad dura:', error);
       throw error;
     }
   }

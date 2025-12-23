@@ -115,32 +115,92 @@
           <div class="skill-group">
             <div class="skill-group-header">
               <h3>{{ skillGroup.h2 }}</h3>
-              @if (isEditMode() && skillGroup.items) {
-                <div class="skill-edit-controls">
-                  <input type="text" [(ngModel)]="editSkillForm" placeholder="Nueva habilidad" class="skill-input">
-                  <button class="add-skill-btn" (click)="addSkillItem(i)">+</button>
-                </div>
+              @if (isEditMode()) {
+                @if (skillGroup.items) {
+                  <button class="add-skill-group-btn" (click)="startAddSkillItem(i)" title="Agregar habilidad blanda">+</button>
+                }
+                @if (skillGroup.itemsObject) {
+                  <button class="add-skill-group-btn" (click)="startAddSkillObject(i)" title="Agregar habilidad dura">+</button>
+                }
               }
             </div>
+            
+            <!-- Formulario para agregar habilidad blanda -->
+            @if (addingSkillItem() === i) {
+              <div class="edit-form-card">
+                <input type="text" [(ngModel)]="editSkillForm" placeholder="Nombre de la habilidad" class="form-input">
+                <div class="edit-actions">
+                  <button class="save-btn" (click)="addSkillItem(i)">Guardar</button>
+                  <button class="cancel-btn" (click)="cancelAddSkillItem()">Cancelar</button>
+                </div>
+              </div>
+            }
+            
+            <!-- Formulario para agregar habilidad dura -->
+            @if (addingSkillObject() === i) {
+              <div class="edit-form-card">
+                <input type="text" [(ngModel)]="editSkillObjectForm().name" placeholder="Nombre" class="form-input">
+                <input type="text" [(ngModel)]="editSkillObjectForm().img" placeholder="Ruta de imagen" class="form-input">
+                <input type="text" [(ngModel)]="editSkillObjectForm().url" placeholder="URL (opcional)" class="form-input">
+                <div class="edit-actions">
+                  <button class="save-btn" (click)="addSkillObject(i)">Guardar</button>
+                  <button class="cancel-btn" (click)="cancelAddSkillObject()">Cancelar</button>
+                </div>
+              </div>
+            }
+            
             <div class="skills-list">
               @if (skillGroup.items) {
                 @for (skill of skillGroup.items; track skill; let j = $index) {
-                  <span class="skill-chip" [class.edit-mode]="isAuthenticated">
-                    {{ skill }}
-                    @if (isAuthenticated) {
-                      <button class="delete-skill-btn" (click)="deleteSkillItem(i, j)" title="Eliminar">×</button>
-                    }
-                  </span>
+                  @if (editingSkillGroupIndex() === i && editingSkillItemIndex() === j) {
+                    <!-- Formulario de edición de habilidad blanda -->
+                    <div class="edit-form-card">
+                      <input type="text" [(ngModel)]="editSkillForm" placeholder="Nombre" class="form-input">
+                      <div class="edit-actions">
+                        <button class="save-btn" (click)="saveSkillItem()">Guardar</button>
+                        <button class="cancel-btn" (click)="cancelEditSkillItem()">Cancelar</button>
+                      </div>
+                    </div>
+                  } @else {
+                    <span class="skill-chip" [class.edit-mode]="isAuthenticated">
+                      {{ skill }}
+                      @if (isAuthenticated) {
+                        <div class="skill-chip-controls">
+                          <button class="edit-skill-btn" (click)="startEditSkillItem(i, j)" title="Editar">✏️</button>
+                          <button class="delete-skill-btn" (click)="deleteSkillItem(i, j)" title="Eliminar">×</button>
+                        </div>
+                      }
+                    </span>
+                  }
                 }
               }
               @if (skillGroup.itemsObject) {
-                @for (skillObj of skillGroup.itemsObject; track skillObj.name) {
-                  <div class="skill-item-object">
-                    @if (skillObj.img) {
-                      <img [src]="skillObj.img" [alt]="skillObj.name" class="skill-icon">
-                    }
-                    <span>{{ skillObj.name }}</span>
-                  </div>
+                @for (skillObj of skillGroup.itemsObject; track skillObj.name; let j = $index) {
+                  @if (editingSkillGroupIndex() === i && editingSkillObjectIndex() === j) {
+                    <!-- Formulario de edición de habilidad dura -->
+                    <div class="edit-form-card">
+                      <input type="text" [(ngModel)]="editSkillObjectForm().name" placeholder="Nombre" class="form-input">
+                      <input type="text" [(ngModel)]="editSkillObjectForm().img" placeholder="Ruta de imagen" class="form-input">
+                      <input type="text" [(ngModel)]="editSkillObjectForm().url" placeholder="URL (opcional)" class="form-input">
+                      <div class="edit-actions">
+                        <button class="save-btn" (click)="saveSkillObject()">Guardar</button>
+                        <button class="cancel-btn" (click)="cancelEditSkillObject()">Cancelar</button>
+                      </div>
+                    </div>
+                  } @else {
+                    <div class="skill-item-object" [class.edit-mode]="isAuthenticated">
+                      @if (skillObj.img) {
+                        <img [src]="skillObj.img" [alt]="skillObj.name" class="skill-icon">
+                      }
+                      <span>{{ skillObj.name }}</span>
+                      @if (isAuthenticated) {
+                        <div class="skill-object-controls">
+                          <button class="edit-skill-btn" (click)="startEditSkillObject(i, j)" title="Editar">✏️</button>
+                          <button class="delete-skill-btn" (click)="deleteSkillObject(i, j)" title="Eliminar">🗑️</button>
+                        </div>
+                      }
+                    </div>
+                  }
                 }
               }
             </div>

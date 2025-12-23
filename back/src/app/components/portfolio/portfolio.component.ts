@@ -49,13 +49,20 @@ export class PortfolioComponent implements OnInit {
   isEditMode = computed(() => this.authService.isAuthenticated());
   editingProjectIndex = signal<number | null>(null);
   editingSkillGroupIndex = signal<number | null>(null);
+  editingSkillItemIndex = signal<number | null>(null);
+  editingSkillObjectIndex = signal<number | null>(null);
   editingContentIndex = signal<number | null>(null);
   editingContentItemIndex = signal<number | null>(null);
   
   // Formularios temporales
   editProjectForm = signal<Partial<ICardProjects>>({});
   editSkillForm = signal<string>('');
+  editSkillObjectForm = signal<{ name: string; img: string; url?: string }>({ name: '', img: '', url: '' });
   editContentForm = signal<Partial<any>>({});
+  
+  // Estados para agregar nuevas habilidades
+  addingSkillItem = signal<number | null>(null);
+  addingSkillObject = signal<number | null>(null);
   
   // Nombre completo
   fullName = 'Jhojan Danilo Toro Perez';
@@ -156,13 +163,14 @@ export class PortfolioComponent implements OnInit {
     }
   }
 
-  // ===== EDICIÓN DE HABILIDADES =====
-  startEditSkillGroup(index: number): void {
-    this.editingSkillGroupIndex.set(index);
+  // ===== EDICIÓN DE HABILIDADES BLANDAS =====
+  startAddSkillItem(groupIndex: number): void {
+    this.addingSkillItem.set(groupIndex);
+    this.editSkillForm.set('');
   }
 
-  cancelEditSkillGroup(): void {
-    this.editingSkillGroupIndex.set(null);
+  cancelAddSkillItem(): void {
+    this.addingSkillItem.set(null);
     this.editSkillForm.set('');
   }
 
@@ -170,13 +178,97 @@ export class PortfolioComponent implements OnInit {
     const skill = this.editSkillForm().trim();
     if (skill) {
       await this.portfolioService.addSkillItem(groupIndex, skill);
-      this.editSkillForm.set('');
+      this.cancelAddSkillItem();
+    }
+  }
+
+  startEditSkillItem(groupIndex: number, itemIndex: number): void {
+    const skillGroup = this.skills()[groupIndex];
+    if (skillGroup?.items) {
+      this.editSkillForm.set(skillGroup.items[itemIndex]);
+      this.editingSkillGroupIndex.set(groupIndex);
+      this.editingSkillItemIndex.set(itemIndex);
+    }
+  }
+
+  cancelEditSkillItem(): void {
+    this.editingSkillGroupIndex.set(null);
+    this.editingSkillItemIndex.set(null);
+    this.editSkillForm.set('');
+  }
+
+  async saveSkillItem(): Promise<void> {
+    const groupIndex = this.editingSkillGroupIndex();
+    const itemIndex = this.editingSkillItemIndex();
+    if (groupIndex !== null && itemIndex !== null) {
+      const skill = this.editSkillForm().trim();
+      if (skill) {
+        await this.portfolioService.updateSkillItem(groupIndex, itemIndex, skill);
+        this.cancelEditSkillItem();
+      }
     }
   }
 
   async deleteSkillItem(groupIndex: number, itemIndex: number): Promise<void> {
     if (confirm('¿Estás seguro de eliminar esta habilidad?')) {
       await this.portfolioService.deleteSkillItem(groupIndex, itemIndex);
+    }
+  }
+
+  // ===== EDICIÓN DE HABILIDADES DURAS =====
+  startAddSkillObject(groupIndex: number): void {
+    this.addingSkillObject.set(groupIndex);
+    this.editSkillObjectForm.set({ name: '', img: '', url: '' });
+  }
+
+  cancelAddSkillObject(): void {
+    this.addingSkillObject.set(null);
+    this.editSkillObjectForm.set({ name: '', img: '', url: '' });
+  }
+
+  async addSkillObject(groupIndex: number): Promise<void> {
+    const form = this.editSkillObjectForm();
+    if (form.name && form.img) {
+      await this.portfolioService.addSkillObject(groupIndex, form);
+      this.cancelAddSkillObject();
+    }
+  }
+
+  startEditSkillObject(groupIndex: number, itemIndex: number): void {
+    const skillGroup = this.skills()[groupIndex];
+    if (skillGroup?.itemsObject) {
+      const skillObj = skillGroup.itemsObject[itemIndex];
+      this.editSkillObjectForm.set({ 
+        name: skillObj.name, 
+        img: skillObj.img || '', 
+        url: skillObj.url || '' 
+      });
+      this.editingSkillGroupIndex.set(groupIndex);
+      this.editingSkillObjectIndex.set(itemIndex);
+    }
+  }
+
+  cancelEditSkillObject(): void {
+    this.editingSkillGroupIndex.set(null);
+    this.editingSkillObjectIndex.set(null);
+    this.editSkillObjectForm.set({ name: '', img: '', url: '' });
+  }
+
+  async saveSkillObject(): Promise<void> {
+    const groupIndex = this.editingSkillGroupIndex();
+    const itemIndex = this.editingSkillObjectIndex();
+    if (groupIndex !== null && itemIndex !== null) {
+      const form = this.editSkillObjectForm();
+      if (form.name && form.img) {
+        await this.portfolioService.updateSkillObject(groupIndex, itemIndex, form);
+        this.cancelEditSkillObject();
+      }
+    }
+  }
+
+  async deleteSkillObject(groupIndex: number, itemIndex: number): Promise<void> {
+    if (confirm('¿Estás seguro de eliminar esta habilidad?')) {
+      await this.portfolioService.deleteSkillObject(groupIndex, itemIndex);
     }
   }
 
