@@ -39,11 +39,6 @@
         }
       }
     </div>
-    @if (isAuthenticated) {
-      <button class="logout-btn" (click)="logout()" title="Cerrar sesión">
-        Logout
-      </button>
-    }
   </header>
 
   <!-- Sección Principal - 3 Columnas -->
@@ -299,4 +294,11 @@
     [title]="currentLanguage === 'es' ? 'EN' : 'ES'">
     <span class="language-code">{{ currentLanguage === 'es' ? 'EN' : 'ES' }}</span>
   </button>
+  
+  <!-- Botón de Logout en la parte inferior izquierda -->
+  @if (isAuthenticated) {
+    <button class="logout-btn" (click)="logout()" title="Cerrar sesión">
+      Logout
+    </button>
+  }
 </div>

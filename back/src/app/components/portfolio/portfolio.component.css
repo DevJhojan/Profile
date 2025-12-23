@@ -766,18 +766,21 @@
 
 /* Estilos de edición */
 .logout-btn {
-  position: absolute;
-  right: 0;
-  padding: 0.5rem 1rem;
-  background: var(--buttonBg);
-  border: 2px solid var(--buttonBorder);
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+  padding: 0.75rem 1.5rem;
   border-radius: 8px;
+  border: 2px solid var(--buttonBorder);
+  background: var(--buttonBg);
+  backdrop-filter: blur(10px);
   color: var(--title);
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: var(--shadowStart);
+  z-index: 1000;
 }
 
 .logout-btn:hover {
