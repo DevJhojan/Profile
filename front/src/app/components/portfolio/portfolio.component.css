@@ -123,6 +123,14 @@
   min-height: auto;
 }
 
+.loading-message {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text);
+  font-size: 1rem;
+  opacity: 0.7;
+}
+
 .projects-list {
   display: flex;
   flex-direction: column;

@@ -2,8 +2,8 @@ import { Component, inject, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ThemeService } from '../../services/theme.service';
 import { LanguageService } from '../../services/language.service';
+import { PortfolioService } from '../../services/portfolio.service';
 import { ModalComponent } from '../modal/modal.component';
-import { projectsData, skillsData, contentsData } from '../../data/translations.data';
 import type { ICardProjects, ICardNormal, IContent } from '@models';
 
 @Component({
@@ -16,15 +16,17 @@ import type { ICardProjects, ICardNormal, IContent } from '@models';
 export class PortfolioComponent implements OnInit {
   private themeService = inject(ThemeService);
   private languageService = inject(LanguageService);
+  private portfolioService = inject(PortfolioService);
   
   ngOnInit(): void {
     this.themeService.currentTheme();
   }
   
-  // Datos traducidos
-  projects = computed(() => projectsData[this.languageService.currentLanguage()]);
-  skills = computed(() => skillsData[this.languageService.currentLanguage()]);
-  allContents = computed(() => contentsData[this.languageService.currentLanguage()]);
+  // Datos desde Firebase (solo lectura)
+  projects = this.portfolioService.projects;
+  skills = this.portfolioService.skills;
+  allContents = this.portfolioService.contents;
+  isLoading = this.portfolioService.isLoading;
   
   // Traducciones
   t = computed(() => this.languageService.getTranslations());
