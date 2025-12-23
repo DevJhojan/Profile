@@ -26,6 +26,34 @@ npm install
 La configuración de Firebase ya está incluida en `src/app/services/firebase.config.ts`. La aplicación está conectada a:
 - **Realtime Database**: `https://profile-cd57b-default-rtdb.firebaseio.com/`
 
+#### ⚠️ IMPORTANTE: Configurar Reglas de Seguridad de Realtime Database
+
+**Debes configurar las reglas de seguridad en Firebase Console para que la aplicación funcione:**
+
+1. Ve a la [Consola de Firebase](https://console.firebase.google.com/)
+2. Selecciona el proyecto `profile-cd57b`
+3. Ve a **Realtime Database** > **Rules** (o **Reglas**)
+4. Reemplaza las reglas actuales con las siguientes:
+
+```json
+{
+  "rules": {
+    "portfolio": {
+      ".read": true,
+      ".write": "auth != null"
+    }
+  }
+}
+```
+
+5. Haz clic en **Publish** (Publicar)
+
+**Explicación de las reglas:**
+- `.read: true` - Permite que cualquiera pueda leer el portafolio (público)
+- `.write: "auth != null"` - Solo usuarios autenticados pueden escribir/editar
+
+**Nota**: Si prefieres que solo usuarios autenticados puedan leer también, cambia `.read: true` por `.read: "auth != null"`
+
 ### 3. Configurar usuario único en Firebase
 
 1. Ve a la [Consola de Firebase](https://console.firebase.google.com/)
