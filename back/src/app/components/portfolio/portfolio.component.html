@@ -108,104 +108,140 @@
     <!-- Columna Derecha - Habilidades -->
     <section class="portfolio-column skills-column">
       <div class="column-header">
-        <h2>{{ t().hardAndSoftSkills }}</h2>
-      </div>
-      <div class="skills-content">
-        @for (skillGroup of skills(); track skillGroup.h2; let i = $index) {
-          <div class="skill-group">
-            <div class="skill-group-header">
-              <h3>{{ skillGroup.h2 }}</h3>
-              @if (isEditMode()) {
-                @if (skillGroup.items) {
-                  <button class="add-skill-group-btn" (click)="startAddSkillItem(i)" title="Agregar habilidad blanda">+</button>
-                }
-                @if (skillGroup.itemsObject) {
-                  <button class="add-skill-group-btn" (click)="startAddSkillObject(i)" title="Agregar habilidad dura">+</button>
-                }
-              }
-            </div>
-            
-            <!-- Formulario para agregar habilidad blanda -->
-            @if (addingSkillItem() === i) {
-              <div class="edit-form-card">
-                <input type="text" [(ngModel)]="editSkillForm" placeholder="Nombre de la habilidad" class="form-input">
-                <div class="edit-actions">
-                  <button class="save-btn" (click)="addSkillItem(i)">Guardar</button>
-                  <button class="cancel-btn" (click)="cancelAddSkillItem()">Cancelar</button>
-                </div>
-              </div>
-            }
-            
-            <!-- Formulario para agregar habilidad dura -->
-            @if (addingSkillObject() === i) {
-              <div class="edit-form-card">
-                <input type="text" [(ngModel)]="editSkillObjectForm().name" placeholder="Nombre" class="form-input">
-                <input type="text" [(ngModel)]="editSkillObjectForm().img" placeholder="Ruta de imagen" class="form-input">
-                <input type="text" [(ngModel)]="editSkillObjectForm().url" placeholder="URL (opcional)" class="form-input">
-                <div class="edit-actions">
-                  <button class="save-btn" (click)="addSkillObject(i)">Guardar</button>
-                  <button class="cancel-btn" (click)="cancelAddSkillObject()">Cancelar</button>
-                </div>
-              </div>
-            }
-            
-            <div class="skills-list">
-              @if (skillGroup.items) {
-                @for (skill of skillGroup.items; track skill; let j = $index) {
-                  @if (editingSkillGroupIndex() === i && editingSkillItemIndex() === j) {
-                    <!-- Formulario de edición de habilidad blanda -->
-                    <div class="edit-form-card">
-                      <input type="text" [(ngModel)]="editSkillForm" placeholder="Nombre" class="form-input">
-                      <div class="edit-actions">
-                        <button class="save-btn" (click)="saveSkillItem()">Guardar</button>
-                        <button class="cancel-btn" (click)="cancelEditSkillItem()">Cancelar</button>
-                      </div>
-                    </div>
-                  } @else {
-                    <span class="skill-chip" [class.edit-mode]="isAuthenticated">
-                      {{ skill }}
-                      @if (isAuthenticated) {
-                        <div class="skill-chip-controls">
-                          <button class="edit-skill-btn" (click)="startEditSkillItem(i, j)" title="Editar">✏️</button>
-                          <button class="delete-skill-btn" (click)="deleteSkillItem(i, j)" title="Eliminar">×</button>
-                        </div>
-                      }
-                    </span>
-                  }
-                }
-              }
-              @if (skillGroup.itemsObject) {
-                @for (skillObj of skillGroup.itemsObject; track skillObj.name; let j = $index) {
-                  @if (editingSkillGroupIndex() === i && editingSkillObjectIndex() === j) {
-                    <!-- Formulario de edición de habilidad dura -->
-                    <div class="edit-form-card">
-                      <input type="text" [(ngModel)]="editSkillObjectForm().name" placeholder="Nombre" class="form-input">
-                      <input type="text" [(ngModel)]="editSkillObjectForm().img" placeholder="Ruta de imagen" class="form-input">
-                      <input type="text" [(ngModel)]="editSkillObjectForm().url" placeholder="URL (opcional)" class="form-input">
-                      <div class="edit-actions">
-                        <button class="save-btn" (click)="saveSkillObject()">Guardar</button>
-                        <button class="cancel-btn" (click)="cancelEditSkillObject()">Cancelar</button>
-                      </div>
-                    </div>
-                  } @else {
-                    <div class="skill-item-object" [class.edit-mode]="isAuthenticated">
-                      @if (skillObj.img) {
-                        <img [src]="skillObj.img" [alt]="skillObj.name" class="skill-icon">
-                      }
-                      <span>{{ skillObj.name }}</span>
-                      @if (isAuthenticated) {
-                        <div class="skill-object-controls">
-                          <button class="edit-skill-btn" (click)="startEditSkillObject(i, j)" title="Editar">✏️</button>
-                          <button class="delete-skill-btn" (click)="deleteSkillObject(i, j)" title="Eliminar">🗑️</button>
-                        </div>
-                      }
-                    </div>
-                  }
-                }
-              }
-            </div>
-          </div>
+        <h2>Habilidades</h2>
+        @if (isEditMode()) {
+          <button class="edit-add-btn" (click)="startAddSkill()" title="Agregar habilidad">+</button>
         }
+      </div>
+      
+      <!-- Formulario para agregar nueva habilidad -->
+      @if (isAddingSkill()) {
+        <div class="edit-form-card">
+          <h4>Nueva Habilidad</h4>
+          <select [(ngModel)]="newSkillType" class="form-input">
+            <option value="blanda">Habilidad Blanda</option>
+            <option value="dura">Habilidad Dura</option>
+          </select>
+          
+          @if (newSkillType() === 'blanda') {
+            <input type="text" [(ngModel)]="newSkillForm().name" placeholder="Nombre de la habilidad" class="form-input">
+          } @else {
+            <input type="text" [(ngModel)]="newSkillForm().name" placeholder="Nombre" class="form-input">
+            <input type="text" [(ngModel)]="newSkillForm().img" placeholder="Ruta de imagen" class="form-input">
+            <input type="text" [(ngModel)]="newSkillForm().url" placeholder="URL (opcional)" class="form-input">
+          }
+          
+          <div class="edit-actions">
+            <button class="save-btn" (click)="saveNewSkill()">Guardar</button>
+            <button class="cancel-btn" (click)="cancelAddSkill()">Cancelar</button>
+          </div>
+        </div>
+      }
+      
+      <div class="skills-content">
+        <!-- Sección única de habilidades -->
+        <div class="skill-group">
+          <!-- Habilidades Duras -->
+          @for (skillGroup of skills(); track skillGroup.h2; let i = $index) {
+            @if (skillGroup.itemsObject) {
+              <div class="skill-subsection">
+                <div class="skill-subsection-header">
+                  <h3 class="skill-subtitle">Duras</h3>
+                </div>
+                
+                <!-- Formulario para agregar habilidad dura -->
+                @if (addingSkillObject() === i) {
+                  <div class="edit-form-card">
+                    <input type="text" [(ngModel)]="editSkillObjectForm().name" placeholder="Nombre" class="form-input">
+                    <input type="text" [(ngModel)]="editSkillObjectForm().img" placeholder="Ruta de imagen" class="form-input">
+                    <input type="text" [(ngModel)]="editSkillObjectForm().url" placeholder="URL (opcional)" class="form-input">
+                    <div class="edit-actions">
+                      <button class="save-btn" (click)="addSkillObject(i)">Guardar</button>
+                      <button class="cancel-btn" (click)="cancelAddSkillObject()">Cancelar</button>
+                    </div>
+                  </div>
+                }
+                
+                <div class="skills-list">
+                  @for (skillObj of skillGroup.itemsObject; track skillObj.name; let j = $index) {
+                    @if (editingSkillGroupIndex() === i && editingSkillObjectIndex() === j) {
+                      <!-- Formulario de edición de habilidad dura -->
+                      <div class="edit-form-card">
+                        <input type="text" [(ngModel)]="editSkillObjectForm().name" placeholder="Nombre" class="form-input">
+                        <input type="text" [(ngModel)]="editSkillObjectForm().img" placeholder="Ruta de imagen" class="form-input">
+                        <input type="text" [(ngModel)]="editSkillObjectForm().url" placeholder="URL (opcional)" class="form-input">
+                        <div class="edit-actions">
+                          <button class="save-btn" (click)="saveSkillObject()">Guardar</button>
+                          <button class="cancel-btn" (click)="cancelEditSkillObject()">Cancelar</button>
+                        </div>
+                      </div>
+                    } @else {
+                      <div class="skill-item-object" [class.edit-mode]="isAuthenticated">
+                        @if (skillObj.img) {
+                          <img [src]="skillObj.img" [alt]="skillObj.name" class="skill-icon">
+                        }
+                        <span>{{ skillObj.name }}</span>
+                        @if (isAuthenticated) {
+                          <div class="skill-object-controls">
+                            <button class="edit-skill-btn" (click)="startEditSkillObject(i, j)" title="Editar">✏️</button>
+                            <button class="delete-skill-btn" (click)="deleteSkillObject(i, j)" title="Eliminar">🗑️</button>
+                          </div>
+                        }
+                      </div>
+                    }
+                  }
+                </div>
+              </div>
+            }
+          }
+          
+          <!-- Habilidades Blandas -->
+          @for (skillGroup of skills(); track skillGroup.h2; let i = $index) {
+            @if (skillGroup.items) {
+              <div class="skill-subsection">
+                <div class="skill-subsection-header">
+                  <h3 class="skill-subtitle">Blandas</h3>
+                </div>
+                
+                <!-- Formulario para agregar habilidad blanda -->
+                @if (addingSkillItem() === i) {
+                  <div class="edit-form-card">
+                    <input type="text" [(ngModel)]="editSkillForm" placeholder="Nombre de la habilidad" class="form-input">
+                    <div class="edit-actions">
+                      <button class="save-btn" (click)="addSkillItem(i)">Guardar</button>
+                      <button class="cancel-btn" (click)="cancelAddSkillItem()">Cancelar</button>
+                    </div>
+                  </div>
+                }
+                
+                <div class="skills-list">
+                  @for (skill of skillGroup.items; track skill; let j = $index) {
+                    @if (editingSkillGroupIndex() === i && editingSkillItemIndex() === j) {
+                      <!-- Formulario de edición de habilidad blanda -->
+                      <div class="edit-form-card">
+                        <input type="text" [(ngModel)]="editSkillForm" placeholder="Nombre" class="form-input">
+                        <div class="edit-actions">
+                          <button class="save-btn" (click)="saveSkillItem()">Guardar</button>
+                          <button class="cancel-btn" (click)="cancelEditSkillItem()">Cancelar</button>
+                        </div>
+                      </div>
+                    } @else {
+                      <span class="skill-chip" [class.edit-mode]="isAuthenticated">
+                        {{ skill }}
+                        @if (isAuthenticated) {
+                          <div class="skill-chip-controls">
+                            <button class="edit-skill-btn" (click)="startEditSkillItem(i, j)" title="Editar">✏️</button>
+                            <button class="delete-skill-btn" (click)="deleteSkillItem(i, j)" title="Eliminar">×</button>
+                          </div>
+                        }
+                      </span>
+                    }
+                  }
+                </div>
+              </div>
+            }
+          }
+        </div>
       </div>
     </section>
   </main>

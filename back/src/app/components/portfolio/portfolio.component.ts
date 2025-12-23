@@ -63,6 +63,9 @@ export class PortfolioComponent implements OnInit {
   // Estados para agregar nuevas habilidades
   addingSkillItem = signal<number | null>(null);
   addingSkillObject = signal<number | null>(null);
+  isAddingSkill = signal<boolean>(false);
+  newSkillType = signal<'blanda' | 'dura'>('blanda');
+  newSkillForm = signal<{ name: string; img: string; url: string }>({ name: '', img: '', url: '' });
   
   // Nombre completo
   fullName = 'Jhojan Danilo Toro Perez';
@@ -164,6 +167,44 @@ export class PortfolioComponent implements OnInit {
   }
 
   // ===== EDICIÓN DE HABILIDADES BLANDAS =====
+  startAddSkill(): void {
+    this.isAddingSkill.set(true);
+    this.newSkillType.set('blanda');
+    this.newSkillForm.set({ name: '', img: '', url: '' });
+  }
+
+  cancelAddSkill(): void {
+    this.isAddingSkill.set(false);
+    this.newSkillType.set('blanda');
+    this.newSkillForm.set({ name: '', img: '', url: '' });
+  }
+
+  async saveNewSkill(): Promise<void> {
+    const skills = this.skills();
+    const type = this.newSkillType();
+    const form = this.newSkillForm();
+    
+    if (type === 'blanda') {
+      // Buscar el grupo de habilidades blandas
+      const softSkillsIndex = skills.findIndex(s => s.items !== undefined);
+      if (softSkillsIndex !== -1 && form.name.trim()) {
+        await this.portfolioService.addSkillItem(softSkillsIndex, form.name.trim());
+        this.cancelAddSkill();
+      }
+    } else {
+      // Buscar el grupo de habilidades duras
+      const hardSkillsIndex = skills.findIndex(s => s.itemsObject !== undefined);
+      if (hardSkillsIndex !== -1 && form.name.trim() && form.img.trim()) {
+        await this.portfolioService.addSkillObject(hardSkillsIndex, {
+          name: form.name.trim(),
+          img: form.img.trim(),
+          url: form.url.trim() || undefined
+        });
+        this.cancelAddSkill();
+      }
+    }
+  }
+
   startAddSkillItem(groupIndex: number): void {
     this.addingSkillItem.set(groupIndex);
     this.editSkillForm.set('');
