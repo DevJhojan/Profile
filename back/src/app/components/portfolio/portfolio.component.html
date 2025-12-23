@@ -18,6 +18,9 @@
           <input type="text" [(ngModel)]="editCvUrlForm" placeholder="URL del CV" class="cv-url-input">
           <div class="cv-url-actions">
             <button class="save-btn" (click)="saveCvUrl()">Guardar</button>
+            @if (cvUrl()) {
+              <button class="delete-btn" (click)="deleteCvUrl()" title="Eliminar URL">🗑️</button>
+            }
             <button class="cancel-btn" (click)="cancelEditCvUrl()">Cancelar</button>
           </div>
         </div>

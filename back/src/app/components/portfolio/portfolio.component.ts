@@ -434,6 +434,13 @@ export class PortfolioComponent implements OnInit {
     }
   }
 
+  async deleteCvUrl(): Promise<void> {
+    if (confirm('¿Estás seguro de eliminar la URL del CV?')) {
+      await this.portfolioService.deleteCvUrl();
+      this.cancelEditCvUrl();
+    }
+  }
+
   downloadCv(): void {
     const url = this.cvUrl();
     if (url) {

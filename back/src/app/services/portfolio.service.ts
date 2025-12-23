@@ -86,6 +86,15 @@ export class PortfolioService {
     }
   }
 
+  async deleteCvUrl(): Promise<void> {
+    try {
+      await remove(this.cvUrlRef);
+    } catch (error) {
+      console.error('Error al eliminar URL del CV:', error);
+      throw error;
+    }
+  }
+
   // ===== PROYECTOS =====
   async loadProjects(): Promise<void> {
     try {

@@ -164,6 +164,17 @@
 .cv-url-actions {
   display: flex;
   gap: 0.5rem;
+  align-items: center;
+}
+
+.cv-url-actions .delete-btn {
+  width: 35px;
+  height: 35px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
 }
 
 /* Main - 3 Columnas */
