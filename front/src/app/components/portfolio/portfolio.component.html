@@ -11,6 +11,7 @@
         [alt]="currentTheme === 'dark' ? t().changeThemeToLight : t().changeThemeToDark"
         class="theme-icon">
     </button>
+    <div class="name-section">
     @if (cvUrl()) {
       <a [href]="cvUrl()" target="_blank" class="cv-download-btn" title="Descargar curriculum">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -21,7 +22,6 @@
         <span class="cv-tooltip">Descargar curriculum</span>
       </a>
     }
-    <div class="name-section">
       <h1 class="full-name">{{ fullName }}</h1>
     </div>
   </header>
