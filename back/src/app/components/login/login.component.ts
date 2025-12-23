@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { AuthInitService } from '../../services/auth-init.service';
 
 @Component({
   selector: 'app-login',
@@ -20,35 +19,13 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private router: Router,
-    private authInitService: AuthInitService
+    private router: Router
   ) {}
 
   async ngOnInit(): Promise<void> {
-    // Intentar autenticación automática con credentials_personal.json
-    this.isLoading.set(true);
-    const result = await this.authInitService.initializeUser();
-    this.isLoading.set(false);
-    
-    if (result.success) {
-      // Si la autenticación automática fue exitosa, redirigir
+    // Verificar si ya está autenticado
+    if (this.authService.isAuthenticated()) {
       this.router.navigate(['/']);
-    } else {
-      // Si falla, cargar credenciales en el formulario si están disponibles
-      await this.loadCredentialsToForm();
-    }
-  }
-
-  private async loadCredentialsToForm(): Promise<void> {
-    try {
-      const response = await fetch('/credentials_personal.json');
-      if (response.ok) {
-        const credentials = await response.json();
-        this.email = credentials.email || '';
-        this.password = credentials.password || '';
-      }
-    } catch (error) {
-      // Ignorar errores, simplemente no cargar credenciales
     }
   }
 
@@ -70,12 +47,6 @@ export class LoginComponent implements OnInit {
       this.router.navigate(['/']);
     } else {
       this.errorMessage.set(result.error || 'Error al iniciar sesión');
-      
-      // Si es error de too-many-requests, permitir reintento después de un momento
-      if (result.error?.includes('Muchos intentos')) {
-        // No bloqueamos, solo mostramos el mensaje
-        // El usuario puede intentar nuevamente
-      }
     }
 
     this.isLoading.set(false);
