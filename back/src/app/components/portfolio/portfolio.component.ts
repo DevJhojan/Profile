@@ -5,8 +5,8 @@ import { ThemeService } from '../../services/theme.service';
 import { LanguageService } from '../../services/language.service';
 import { AuthService } from '../../services/auth.service';
 import { PortfolioService } from '../../services/portfolio.service';
+import { DataMigrationService } from '../../services/data-migration.service';
 import { ModalComponent } from '../modal/modal.component';
-import { projectsData, skillsData, contentsData } from '../../data/translations.data';
 import type { ICardProjects, ICardNormal, IContent } from '@models';
 import { TypeApp, Subcontent } from '@models';
 
@@ -22,50 +22,22 @@ export class PortfolioComponent implements OnInit {
   private languageService = inject(LanguageService);
   private authService = inject(AuthService);
   private portfolioService = inject(PortfolioService);
+  private dataMigrationService = inject(DataMigrationService);
   
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.themeService.currentTheme();
-    // Cargar datos iniciales desde Firebase o usar datos por defecto
-    this.portfolioService.initializeData().then(() => {
-      // Si Firebase está vacío, inicializar con datos por defecto
-      if (this.portfolioService.projects().length === 0) {
-        const defaultProjects = projectsData[this.languageService.currentLanguage()];
-        defaultProjects.forEach(project => {
-          this.portfolioService.addProject(project).catch(console.error);
-        });
-      }
-      if (this.portfolioService.skills().length === 0) {
-        const defaultSkills = skillsData[this.languageService.currentLanguage()];
-        this.portfolioService.updateSkills(defaultSkills).catch(console.error);
-      }
-      if (this.portfolioService.contents().length === 0) {
-        const defaultContents = contentsData[this.languageService.currentLanguage()];
-        this.portfolioService.updateContents(defaultContents).catch(console.error);
-      }
-    });
+    
+    // Migrar datos de la carpeta data a Firebase si está vacío
+    await this.dataMigrationService.migrateDataIfEmpty();
+    
+    // Cargar datos desde Firebase
+    await this.portfolioService.initializeData();
   }
   
-  // Datos desde Firebase o traducciones
-  projects = computed(() => {
-    const firebaseProjects = this.portfolioService.projects();
-    return firebaseProjects.length > 0 
-      ? firebaseProjects 
-      : projectsData[this.languageService.currentLanguage()];
-  });
-
-  skills = computed(() => {
-    const firebaseSkills = this.portfolioService.skills();
-    return firebaseSkills.length > 0 
-      ? firebaseSkills 
-      : skillsData[this.languageService.currentLanguage()];
-  });
-
-  allContents = computed(() => {
-    const firebaseContents = this.portfolioService.contents();
-    return firebaseContents.length > 0 
-      ? firebaseContents 
-      : contentsData[this.languageService.currentLanguage()];
-  });
+  // Datos desde Firebase
+  projects = computed(() => this.portfolioService.projects());
+  skills = computed(() => this.portfolioService.skills());
+  allContents = computed(() => this.portfolioService.contents());
   
   // Traducciones
   t = computed(() => this.languageService.getTranslations());

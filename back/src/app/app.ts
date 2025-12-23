@@ -2,6 +2,7 @@ import { Component, signal, inject, OnInit } from '@angular/core';
 import { RouterOutlet, Router } from '@angular/router';
 import { AuthInitService } from './services/auth-init.service';
 import { AuthService } from './services/auth.service';
+import { DataMigrationService } from './services/data-migration.service';
 
 @Component({
   selector: 'app-root',
@@ -13,6 +14,7 @@ export class App implements OnInit {
   protected readonly title = signal('Profile');
   private authInitService = inject(AuthInitService);
   private authService = inject(AuthService);
+  private dataMigrationService = inject(DataMigrationService);
   private router = inject(Router);
 
   async ngOnInit(): Promise<void> {
@@ -20,6 +22,9 @@ export class App implements OnInit {
     
     // Esperar un momento para que Firebase se inicialice
     await new Promise(resolve => setTimeout(resolve, 500));
+    
+    // Migrar datos de la carpeta data a Firebase si está vacío
+    await this.dataMigrationService.migrateDataIfEmpty();
     
     // Intentar autenticación automática al iniciar
     console.log('🔐 Intentando autenticación automática...');
