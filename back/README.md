@@ -26,13 +26,32 @@ npm install
 La configuración de Firebase ya está incluida en `src/app/services/firebase.config.ts`. La aplicación está conectada a:
 - **Realtime Database**: `https://profile-cd57b-default-rtdb.firebaseio.com/`
 
-### 3. Configurar usuario en Firebase Authentication
+### 3. Configurar usuario único en Firebase
+
+**Opción A: Automático (Recomendado)**
+
+1. Edita el archivo `public/credentials_personal.json` y coloca tus credenciales:
+```json
+{
+  "email": "tu-email@ejemplo.com",
+  "password": "tu-contraseña-segura"
+}
+```
+
+2. La aplicación automáticamente:
+   - Intentará iniciar sesión con esas credenciales
+   - Si el usuario no existe, lo registrará automáticamente en Firebase
+   - Si ya existe, iniciará sesión directamente
+
+**Opción B: Manual**
 
 1. Ve a la [Consola de Firebase](https://console.firebase.google.com/)
 2. Selecciona el proyecto `profile-cd57b`
 3. Ve a **Authentication** > **Sign-in method**
 4. Habilita **Email/Password**
 5. Crea un usuario con tu email y contraseña
+
+**Nota**: El archivo `credentials_personal.json` está en `.gitignore`, por lo que no se subirá al repositorio y permanecerá privado.
 
 ### 4. Estructura de datos en Firebase
 
@@ -57,9 +76,16 @@ La aplicación estará disponible en `http://localhost:4200/`
 
 ### Iniciar sesión
 
+**Si configuraste `credentials_personal.json`:**
+- La aplicación iniciará sesión automáticamente al cargar
+- Si el usuario no existe en Firebase, se registrará automáticamente
+- No necesitas hacer nada, simplemente espera a que se autentique
+
+**Si prefieres iniciar sesión manualmente:**
 1. Navega a `http://localhost:4200/`
 2. Serás redirigido automáticamente a `/login`
-3. Ingresa tu email y contraseña de Firebase
+3. Ingresa tu email y contraseña
+4. Si tienes `credentials_personal.json`, los campos se llenarán automáticamente
 
 ### Editar Proyectos
 
