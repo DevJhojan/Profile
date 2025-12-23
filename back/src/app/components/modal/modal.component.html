@@ -1,0 +1,75 @@
+@if (isOpen) {
+  <div class="modal-backdrop" (click)="onBackdropClick($event)">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ title }}</h2>
+        <button class="modal-close-btn" (click)="closeModal()" aria-label="Cerrar modal">
+          <span>×</span>
+        </button>
+      </div>
+      <div class="modal-content">
+        @for (content of contents; track content.titleButton; let contentIndex = $index) {
+          <div class="modal-section">
+            <div class="section-header">
+              <h3 class="section-title">{{ content.titleButton }}</h3>
+              @if (isEditMode) {
+                <button class="add-item-btn" (click)="onStartAdd(contentIndex, $event)">+ Agregar</button>
+              }
+            </div>
+            <ul class="modal-list">
+              @if (editingContentIndex === contentIndex && editingContentItemIndex === -1) {
+                <!-- Formulario para nuevo elemento -->
+                <li class="edit-form-item">
+                  <div class="edit-form-fields">
+                    <input type="text" [(ngModel)]="editContentForm.subTitle" placeholder="Título" class="form-input">
+                    <input type="text" [(ngModel)]="editContentForm.description" placeholder="Descripción" class="form-input">
+                    <input type="text" [(ngModel)]="editContentForm.date" placeholder="Fecha" class="form-input">
+                    <div class="edit-actions">
+                      <button class="save-btn" (click)="onSaveAdd($event)">Guardar</button>
+                      <button class="cancel-btn" (click)="onCancelEdit($event)">Cancelar</button>
+                    </div>
+                  </div>
+                </li>
+              }
+              
+              @for (item of content.listContent; track item.subTitle; let itemIndex = $index) {
+                @if (editingContentIndex === contentIndex && editingContentItemIndex === itemIndex) {
+                  <!-- Formulario de edición -->
+                  <li class="edit-form-item">
+                    <div class="edit-form-fields">
+                      <input type="text" [(ngModel)]="editContentForm.subTitle" placeholder="Título" class="form-input">
+                      <input type="text" [(ngModel)]="editContentForm.description" placeholder="Descripción" class="form-input">
+                      <input type="text" [(ngModel)]="editContentForm.date" placeholder="Fecha" class="form-input">
+                      <div class="edit-actions">
+                        <button class="save-btn" (click)="onSaveEdit($event)">Guardar</button>
+                        <button class="cancel-btn" (click)="onCancelEdit($event)">Cancelar</button>
+                      </div>
+                    </div>
+                  </li>
+                } @else {
+                  <li class="modal-item" [class.edit-mode]="isEditMode">
+                    @if (isEditMode) {
+                      <div class="item-edit-controls">
+                        <button class="edit-item-btn" (click)="onStartEdit(contentIndex, itemIndex, $event)" title="Editar">✏️</button>
+                        <button class="delete-item-btn" (click)="onDeleteItem(contentIndex, itemIndex, $event)" title="Eliminar">🗑️</button>
+                      </div>
+                    }
+                    <div class="modal-item-content">
+                      <div class="modal-item-header">
+                        <strong class="modal-item-title">{{ item.subTitle }}</strong>
+                      </div>
+                      <div class="modal-item-body">
+                        <span class="modal-item-institution">{{ item.description }}</span>
+                        <span class="modal-item-date">{{ item.date }}</span>
+                      </div>
+                    </div>
+                  </li>
+                }
+              }
+            </ul>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}

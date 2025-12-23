@@ -1,0 +1,126 @@
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: var(--bgColor);
+}
+
+.login-card {
+  background: var(--cardBg);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 400px;
+  border: 2px solid var(--buttonBorder);
+  box-shadow: var(--shadowEnd);
+}
+
+.login-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--title);
+  text-align: center;
+  margin: 0 0 0.5rem 0;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.login-subtitle {
+  font-size: 0.9rem;
+  color: var(--subtitle);
+  text-align: center;
+  margin: 0 0 2rem 0;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--title);
+}
+
+.form-input {
+  padding: 0.75rem;
+  border: 2px solid var(--buttonBorder);
+  border-radius: 8px;
+  background: var(--bgColor);
+  color: var(--text);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--title);
+  box-shadow: var(--shadowStart);
+}
+
+.form-input::placeholder {
+  color: var(--subtitle);
+}
+
+.error-message {
+  padding: 0.75rem;
+  background: rgba(244, 67, 54, 0.1);
+  border: 1px solid rgba(244, 67, 54, 0.3);
+  border-radius: 8px;
+  color: #f44336;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.login-button {
+  padding: 0.75rem 1.5rem;
+  background: var(--buttonBg);
+  border: 2px solid var(--buttonBorder);
+  border-radius: 8px;
+  color: var(--title);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadowStart);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.login-button:hover:not(:disabled) {
+  background: var(--buttonBgHover);
+  border-color: var(--title);
+  transform: translateY(-2px);
+  box-shadow: var(--shadowMid);
+}
+
+.login-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.login-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 480px) {
+  .login-card {
+    padding: 1.5rem;
+  }
+
+  .login-title {
+    font-size: 1.5rem;
+  }
+}
+

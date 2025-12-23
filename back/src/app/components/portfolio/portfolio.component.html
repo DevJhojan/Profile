@@ -1,0 +1,179 @@
+<div class="portfolio-container">
+  <!-- Header -->
+  <header class="portfolio-header">
+    <button 
+      class="theme-toggle-btn" 
+      (click)="toggleTheme()"
+      [attr.aria-label]="t().changeThemeToLight"
+      [title]="t().changeTheme">
+      <img 
+        [src]="currentTheme === 'dark' ? 'assets/img/Cambio_tema/sun.png' : 'assets/img/Cambio_tema/moon.png'" 
+        [alt]="currentTheme === 'dark' ? t().changeThemeToLight : t().changeThemeToDark"
+        class="theme-icon">
+    </button>
+    <h1 class="full-name">{{ fullName }}</h1>
+    @if (isAuthenticated) {
+      <button class="logout-btn" (click)="logout()" title="Cerrar sesión">
+        Logout
+      </button>
+    }
+  </header>
+
+  <!-- Sección Principal - 3 Columnas -->
+  <main class="portfolio-main">
+    <!-- Columna Izquierda - Proyectos -->
+    <section class="portfolio-column projects-column">
+      <div class="column-header">
+        <h2>{{ t().projects }}</h2>
+        @if (isEditMode()) {
+          <button class="edit-add-btn" (click)="startAddProject()" title="Agregar proyecto">+</button>
+        }
+      </div>
+      <div class="projects-list">
+        @if (editingProjectIndex() === -1) {
+          <!-- Formulario para nuevo proyecto -->
+          <div class="edit-form-card">
+            <h4>Nuevo Proyecto</h4>
+            <input type="text" [(ngModel)]="editProjectForm().name" placeholder="Nombre" class="form-input">
+            <input type="text" [(ngModel)]="editProjectForm().tool" placeholder="Herramienta" class="form-input">
+            <input type="text" [(ngModel)]="editProjectForm().url" placeholder="URL" class="form-input">
+            <input type="text" [(ngModel)]="editProjectForm().state" placeholder="Estado" class="form-input">
+            <input type="text" [(ngModel)]="editProjectForm().img" placeholder="Imagen" class="form-input">
+            <div class="edit-actions">
+              <button class="save-btn" (click)="addProject()">Guardar</button>
+              <button class="cancel-btn" (click)="cancelEditProject()">Cancelar</button>
+            </div>
+          </div>
+        }
+        
+        @for (project of projects(); track project.name; let i = $index) {
+          @if (editingProjectIndex() === i) {
+            <!-- Formulario de edición -->
+            <div class="edit-form-card">
+              <h4>Editar Proyecto</h4>
+              <input type="text" [(ngModel)]="editProjectForm().name" placeholder="Nombre" class="form-input">
+              <input type="text" [(ngModel)]="editProjectForm().tool" placeholder="Herramienta" class="form-input">
+              <input type="text" [(ngModel)]="editProjectForm().url" placeholder="URL" class="form-input">
+              <input type="text" [(ngModel)]="editProjectForm().state" placeholder="Estado" class="form-input">
+              <input type="text" [(ngModel)]="editProjectForm().img" placeholder="Imagen" class="form-input">
+              <div class="edit-actions">
+                <button class="save-btn" (click)="saveProject(i)">Guardar</button>
+                <button class="cancel-btn" (click)="cancelEditProject()">Cancelar</button>
+              </div>
+            </div>
+          } @else {
+            <div class="project-card" [class.edit-mode]="isEditMode()">
+              @if (isEditMode()) {
+                <div class="edit-controls">
+                  <button class="edit-btn" (click)="startEditProject(i); $event.stopPropagation()" title="Editar">✏️</button>
+                  <button class="delete-btn" (click)="deleteProject(i); $event.stopPropagation()" title="Eliminar">🗑️</button>
+                </div>
+              }
+              <div class="project-content" (click)="openProject(project.url)">
+                <div class="project-image">
+                  <img [src]="project.img" [alt]="project.name" loading="lazy">
+                </div>
+                <div class="project-info">
+                  <h3>{{ project.name }}</h3>
+                  <p class="project-tool">{{ project.tool }}</p>
+                  <span class="project-state" [class.active]="project.state.toLowerCase() === 'active' || project.state.toLowerCase() === 'activo'">
+                    {{ project.state }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          }
+        }
+      </div>
+    </section>
+
+    <!-- Columna Central - Información Personal -->
+    <section class="portfolio-column center-column">
+      <!-- Botón "Más sobre mí" -->
+      <button class="about-me-btn" (click)="openModal()">
+        <h2>{{ t().aboutMe }}</h2>
+        <span class="btn-icon">→</span>
+      </button>
+      
+      <!-- Imagen de Perfil -->
+      <div class="profile-image-container">
+        <img 
+          [src]="profileImage" 
+          alt="Jhojan Danilo Toro Perez" 
+          class="profile-image"
+          loading="lazy">
+      </div>
+    </section>
+
+    <!-- Columna Derecha - Habilidades -->
+    <section class="portfolio-column skills-column">
+      <div class="column-header">
+        <h2>{{ t().hardAndSoftSkills }}</h2>
+      </div>
+      <div class="skills-content">
+        @for (skillGroup of skills(); track skillGroup.h2; let i = $index) {
+          <div class="skill-group">
+            <div class="skill-group-header">
+              <h3>{{ skillGroup.h2 }}</h3>
+              @if (isEditMode() && skillGroup.items) {
+                <div class="skill-edit-controls">
+                  <input type="text" [(ngModel)]="editSkillForm" placeholder="Nueva habilidad" class="skill-input">
+                  <button class="add-skill-btn" (click)="addSkillItem(i)">+</button>
+                </div>
+              }
+            </div>
+            <div class="skills-list">
+              @if (skillGroup.items) {
+                @for (skill of skillGroup.items; track skill; let j = $index) {
+                  <span class="skill-chip" [class.edit-mode]="isAuthenticated">
+                    {{ skill }}
+                    @if (isAuthenticated) {
+                      <button class="delete-skill-btn" (click)="deleteSkillItem(i, j)" title="Eliminar">×</button>
+                    }
+                  </span>
+                }
+              }
+              @if (skillGroup.itemsObject) {
+                @for (skillObj of skillGroup.itemsObject; track skillObj.name) {
+                  <div class="skill-item-object">
+                    @if (skillObj.img) {
+                      <img [src]="skillObj.img" [alt]="skillObj.name" class="skill-icon">
+                    }
+                    <span>{{ skillObj.name }}</span>
+                  </div>
+                }
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal "Más sobre mí" -->
+  <app-modal
+    [isOpen]="isModalOpen"
+    [title]="t().modalTitle"
+    [contents]="allContents()"
+    [isEditMode]="isAuthenticated"
+    [editingContentIndex]="editingContentIndex()"
+    [editingContentItemIndex]="editingContentItemIndex()"
+    [editContentForm]="editContentForm()"
+    (close)="closeModal()"
+    (startEdit)="startEditContentItem($event.contentIndex, $event.itemIndex)"
+    (cancelEdit)="cancelEditContentItem()"
+    (saveEdit)="saveContentItem()"
+    (deleteItem)="deleteContentItem($event.contentIndex, $event.itemIndex)"
+    (startAdd)="startAddContentItem($event)"
+    (saveAdd)="addContentItem()">
+  </app-modal>
+
+  <!-- Botón de cambio de idioma -->
+  <button 
+    class="language-toggle-btn" 
+    (click)="toggleLanguage()"
+    [attr.aria-label]="currentLanguage === 'es' ? 'Change to English' : 'Cambiar a Español'"
+    [title]="currentLanguage === 'es' ? 'EN' : 'ES'">
+    <span class="language-code">{{ currentLanguage === 'es' ? 'EN' : 'ES' }}</span>
+  </button>
+</div>
