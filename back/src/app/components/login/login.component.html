@@ -33,16 +33,23 @@
       @if (errorMessage()) {
         <div class="error-message">
           {{ errorMessage() }}
+          @if (waitTimeRemaining() > 0) {
+            <div class="wait-time">
+              <strong>Tiempo de espera restante: {{ formatTime(waitTimeRemaining()) }}</strong>
+            </div>
+          }
         </div>
       }
 
       <button
         type="submit"
         class="login-button"
-        [disabled]="isLoading()"
+        [disabled]="isLoading() || waitTimeRemaining() > 0"
       >
         @if (isLoading()) {
           <span>Cargando...</span>
+        } @else if (waitTimeRemaining() > 0) {
+          <span>Espera {{ formatTime(waitTimeRemaining()) }}</span>
         } @else {
           <span>Iniciar Sesión</span>
         }
