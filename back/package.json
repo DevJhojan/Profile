@@ -6,7 +6,9 @@
     "start": "ng serve",
     "build": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "setup:server": "bash scripts/setup-local-server.sh",
+    "watch:reload": "bash scripts/watch-and-reload.sh"
   },
   "prettier": {
     "printWidth": 100,

@@ -62,3 +62,6 @@ logs
 # Build artifacts
 *.tsbuildinfo
 
+# Scripts de servidor local (ignorar para no exponer configuración local)
+scripts/
+
