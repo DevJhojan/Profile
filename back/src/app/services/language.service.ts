@@ -19,6 +19,8 @@ export interface Translations {
   // Skills
   tooling: string;
   softSkills: string;
+  hardSkills: string;
+  skills: string;
   
   // Modal
   modalTitle: string;
@@ -53,6 +55,8 @@ export class LanguageService {
       active: 'Activo',
       tooling: 'Herramientas',
       softSkills: 'Habilidades blandas',
+      hardSkills: 'Duras',
+      skills: 'Habilidades',
       modalTitle: 'Más sobre mí',
       training: 'Formación',
       experience: 'Experiencia',
@@ -71,6 +75,8 @@ export class LanguageService {
       active: 'Active',
       tooling: 'Tooling',
       softSkills: 'Soft Skills',
+      hardSkills: 'Hard',
+      skills: 'Skills',
       modalTitle: 'More about me',
       training: 'Training',
       experience: 'Experience',

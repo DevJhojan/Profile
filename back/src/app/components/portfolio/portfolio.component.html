@@ -108,7 +108,7 @@
     <!-- Columna Derecha - Habilidades -->
     <section class="portfolio-column skills-column">
       <div class="column-header">
-        <h2>Habilidades</h2>
+        <h2>{{ t().skills }}</h2>
         @if (isEditMode()) {
           <button class="edit-add-btn" (click)="startAddSkill()" title="Agregar habilidad">+</button>
         }
@@ -146,7 +146,7 @@
             @if (skillGroup.itemsObject) {
               <div class="skill-subsection">
                 <div class="skill-subsection-header">
-                  <h3 class="skill-subtitle">Duras</h3>
+                  <h3 class="skill-subtitle">{{ t().hardSkills }}</h3>
                 </div>
                 
                 <!-- Formulario para agregar habilidad dura -->
@@ -200,7 +200,7 @@
             @if (skillGroup.items) {
               <div class="skill-subsection">
                 <div class="skill-subsection-header">
-                  <h3 class="skill-subtitle">Blandas</h3>
+                  <h3 class="skill-subtitle">{{ t().softSkills }}</h3>
                 </div>
                 
                 <!-- Formulario para agregar habilidad blanda -->

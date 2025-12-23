@@ -69,7 +69,7 @@
       <div class="skills-content">
         @for (skillGroup of skills(); track skillGroup.h2) {
           <div class="skill-group">
-            <h3>{{ skillGroup.h2 }}</h3>
+            <h3>{{ getSkillGroupTitle(skillGroup.h2) }}</h3>
             <div class="skills-list">
               @if (skillGroup.items) {
                 @for (skill of skillGroup.items; track skill) {

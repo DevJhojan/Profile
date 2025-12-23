@@ -31,6 +31,20 @@ export class PortfolioComponent implements OnInit {
   // Traducciones
   t = computed(() => this.languageService.getTranslations());
   
+  // Función para obtener el título traducido de habilidades
+  getSkillGroupTitle(h2: string): string {
+    const translations = this.t();
+    // Mapear los títulos de Firebase a las traducciones
+    if (h2 === 'Herramientas' || h2 === 'Tooling') {
+      return translations.tooling;
+    }
+    if (h2 === 'Habilidades blandas' || h2 === 'Soft Skills') {
+      return translations.softSkills;
+    }
+    // Si no coincide, devolver el original
+    return h2;
+  }
+  
   // Estado del modal
   isModalOpen = false;
   
