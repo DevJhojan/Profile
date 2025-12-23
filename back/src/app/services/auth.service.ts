@@ -30,10 +30,13 @@ export class AuthService {
   async login(email: string, password: string): Promise<{ success: boolean; error?: string }> {
     try {
       this.isLoading.set(true);
-      await signInWithEmailAndPassword(auth, email, password);
+      console.log('Intentando iniciar sesión con:', email);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      console.log('Login exitoso:', userCredential.user.email);
       return { success: true };
     } catch (error) {
       const authError = error as AuthError;
+      console.error('Error en login:', authError.code, authError.message);
       let errorMessage = 'Error al iniciar sesión';
       
       switch (authError.code) {
@@ -49,8 +52,14 @@ export class AuthService {
         case 'auth/user-disabled':
           errorMessage = 'Usuario deshabilitado';
           break;
+        case 'auth/invalid-credential':
+          errorMessage = 'Credenciales inválidas (email o contraseña incorrectos)';
+          break;
+        case 'auth/too-many-requests':
+          errorMessage = 'Demasiados intentos fallidos. Intenta más tarde';
+          break;
         default:
-          errorMessage = authError.message || 'Error desconocido';
+          errorMessage = authError.message || `Error desconocido: ${authError.code}`;
       }
       
       return { success: false, error: errorMessage };

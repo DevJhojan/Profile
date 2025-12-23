@@ -17,22 +17,40 @@ export class AuthInitService {
     try {
       // Intentar leer el archivo de credenciales desde public
       let response: Response;
-      try {
-        response = await fetch(this.credentialsPath);
-      } catch (fetchError) {
-        // Intentar con ruta absoluta
-        response = await fetch('/credentials_personal.json');
+      let credentialsPath = '';
+      
+      // Intentar diferentes rutas
+      const paths = [
+        '/credentials_personal.json',
+        './credentials_personal.json',
+        'credentials_personal.json'
+      ];
+      
+      for (const path of paths) {
+        try {
+          console.log('Intentando leer credenciales desde:', path);
+          response = await fetch(path);
+          if (response.ok) {
+            credentialsPath = path;
+            break;
+          }
+        } catch (e) {
+          console.log('No se pudo leer desde:', path);
+          continue;
+        }
       }
       
-      if (!response.ok) {
-        console.warn('No se encontró credentials_personal.json, omitiendo inicialización automática');
+      if (!response || !response.ok) {
+        console.warn('❌ No se encontró credentials_personal.json en ninguna ruta');
         return { 
           success: false, 
           message: 'Archivo de credenciales no encontrado' 
         };
       }
 
+      console.log('✅ Archivo encontrado en:', credentialsPath);
       const credentials: Credentials = await response.json();
+      console.log('✅ Credenciales leídas, email:', credentials.email);
 
       if (!credentials.email || !credentials.password) {
         return { 
@@ -43,35 +61,38 @@ export class AuthInitService {
 
       // Intentar iniciar sesión primero
       try {
+        console.log('Intentando autenticar con:', credentials.email);
         await signInWithEmailAndPassword(auth, credentials.email, credentials.password);
-        console.log('Usuario autenticado exitosamente desde credentials_personal.json');
+        console.log('✅ Usuario autenticado exitosamente desde credentials_personal.json');
         return { 
           success: true, 
           message: 'Usuario autenticado exitosamente' 
         };
       } catch (signInError: any) {
+        console.error('❌ Error al autenticar:', signInError.code, signInError.message);
+        
         // Si el usuario no existe, intentar registrarlo
-        if (signInError.code === 'auth/user-not-found') {
+        if (signInError.code === 'auth/user-not-found' || signInError.code === 'auth/invalid-credential') {
+          console.log('Usuario no encontrado, intentando registrar...');
           try {
             await createUserWithEmailAndPassword(auth, credentials.email, credentials.password);
-            console.log('Usuario registrado exitosamente desde credentials_personal.json');
+            console.log('✅ Usuario registrado exitosamente desde credentials_personal.json');
             return { 
               success: true, 
               message: 'Usuario registrado exitosamente' 
             };
           } catch (registerError: any) {
-            console.error('Error al registrar usuario:', registerError);
+            console.error('❌ Error al registrar usuario:', registerError.code, registerError.message);
             return { 
               success: false, 
-              message: `Error al registrar usuario: ${registerError.message}` 
+              message: `Error al registrar usuario: ${registerError.message || registerError.code}` 
             };
           }
         } else {
           // Otro error de autenticación
-          console.error('Error al autenticar usuario:', signInError);
           return { 
             success: false, 
-            message: `Error de autenticación: ${signInError.message}` 
+            message: `Error de autenticación: ${signInError.message || signInError.code}` 
           };
         }
       }

@@ -1,4 +1,4 @@
-import { ICardProjects, TypeApp } from '@models';
+    import { ICardProjects, TypeApp } from '@models';
 
 export const projectsData: ICardProjects[] = [
   {
