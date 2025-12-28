@@ -566,8 +566,16 @@
 
   .projects-list,
   .skills-content {
-    overflow-y: visible;
-    max-height: none;
+    overflow-y: auto;
+    max-height: calc(100vh - 250px); /* Altura máxima para permitir scroll */
+    -ms-overflow-style: none; /* IE y Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  /* Ocultar scrollbar pero mantener funcionalidad de scroll */
+  .projects-list::-webkit-scrollbar,
+  .skills-content::-webkit-scrollbar {
+    display: none; /* Chrome, Safari y Opera */
   }
 
   /* En móvil, ordenar columnas: central primero */
@@ -651,8 +659,16 @@
 
   .projects-list,
   .skills-content {
-    overflow-y: visible;
-    max-height: none;
+    overflow-y: auto;
+    max-height: calc(100vh - 250px); /* Altura máxima para permitir scroll */
+    -ms-overflow-style: none; /* IE y Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  /* Ocultar scrollbar pero mantener funcionalidad de scroll */
+  .projects-list::-webkit-scrollbar,
+  .skills-content::-webkit-scrollbar {
+    display: none; /* Chrome, Safari y Opera */
   }
 
   /* Ocultar proyectos y habilidades por defecto en móvil */
@@ -730,6 +746,20 @@
     padding: 0.4rem 0.8rem;
   }
 
+  .projects-list,
+  .skills-content {
+    overflow-y: auto;
+    max-height: calc(100vh - 250px); /* Altura máxima para permitir scroll */
+    -ms-overflow-style: none; /* IE y Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  /* Ocultar scrollbar pero mantener funcionalidad de scroll */
+  .projects-list::-webkit-scrollbar,
+  .skills-content::-webkit-scrollbar {
+    display: none; /* Chrome, Safari y Opera */
+  }
+
   /* Ocultar proyectos y habilidades por defecto en móvil */
   .projects-column:not(.mobile-visible),
   .skills-column:not(.mobile-visible) {
@@ -781,27 +811,29 @@
   letter-spacing: 1px;
 }
 
-/* Scrollbar personalizado para listas */
-.projects-list::-webkit-scrollbar,
-.skills-content::-webkit-scrollbar {
-  width: 6px;
-}
+/* Scrollbar personalizado para listas (solo en desktop) */
+@media (min-width: 1025px) {
+  .projects-list::-webkit-scrollbar,
+  .skills-content::-webkit-scrollbar {
+    width: 6px;
+  }
 
-.projects-list::-webkit-scrollbar-track,
-.skills-content::-webkit-scrollbar-track {
-  background: var(--bgColor);
-  border-radius: 3px;
-}
+  .projects-list::-webkit-scrollbar-track,
+  .skills-content::-webkit-scrollbar-track {
+    background: var(--bgColor);
+    border-radius: 3px;
+  }
 
-.projects-list::-webkit-scrollbar-thumb,
-.skills-content::-webkit-scrollbar-thumb {
-  background: var(--subtitle);
-  border-radius: 3px;
-}
+  .projects-list::-webkit-scrollbar-thumb,
+  .skills-content::-webkit-scrollbar-thumb {
+    background: var(--subtitle);
+    border-radius: 3px;
+  }
 
-.projects-list::-webkit-scrollbar-thumb:hover,
-.skills-content::-webkit-scrollbar-thumb:hover {
-  background: var(--title);
+  .projects-list::-webkit-scrollbar-thumb:hover,
+  .skills-content::-webkit-scrollbar-thumb:hover {
+    background: var(--title);
+  }
 }
 
 /* Responsive para botón de idioma */
