@@ -64,6 +64,10 @@ export class PortfolioComponent implements OnInit, OnDestroy {
   // Menú de ordenamiento
   showSortMenu = signal<boolean>(false);
   
+  // Control de visibilidad en móvil
+  showProjects = signal<boolean>(false);
+  showSkills = signal<boolean>(false);
+  
   // Traducciones
   t = computed(() => this.languageService.getTranslations());
   
@@ -176,6 +180,21 @@ export class PortfolioComponent implements OnInit, OnDestroy {
   
   closeModal(): void {
     this.isModalOpen = false;
+  }
+  
+  // Control de visibilidad en móvil
+  toggleProjects(): void {
+    this.showProjects.update(val => !val);
+    if (this.showProjects()) {
+      this.showSkills.set(false); // Cerrar habilidades si se abre proyectos
+    }
+  }
+  
+  toggleSkills(): void {
+    this.showSkills.update(val => !val);
+    if (this.showSkills()) {
+      this.showProjects.set(false); // Cerrar proyectos si se abre habilidades
+    }
   }
 }
 

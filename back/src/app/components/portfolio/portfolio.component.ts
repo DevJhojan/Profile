@@ -151,6 +151,10 @@ export class PortfolioComponent implements OnInit, OnDestroy {
   // Menú de ordenamiento
   showSortMenu = signal<boolean>(false);
   
+  // Control de visibilidad en móvil
+  showProjects = signal<boolean>(false);
+  showSkills = signal<boolean>(false);
+  
   // Nombre completo
   fullName = 'Jhojan Danilo Toro Perez';
   
@@ -523,5 +527,20 @@ export class PortfolioComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     // Cerrar el menú si está abierto
     this.showSortMenu.set(false);
+  }
+  
+  // Control de visibilidad en móvil
+  toggleProjects(): void {
+    this.showProjects.update(val => !val);
+    if (this.showProjects()) {
+      this.showSkills.set(false); // Cerrar habilidades si se abre proyectos
+    }
+  }
+  
+  toggleSkills(): void {
+    this.showSkills.update(val => !val);
+    if (this.showSkills()) {
+      this.showProjects.set(false); // Cerrar proyectos si se abre habilidades
+    }
   }
 }

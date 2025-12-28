@@ -28,8 +28,26 @@
 
   <!-- Sección Principal - 3 Columnas -->
   <main class="portfolio-main">
+    <!-- Columna Central - Información Personal (Primera en móvil) -->
+    <section class="portfolio-column center-column mobile-first">
+      <!-- Botón "Más sobre mí" -->
+      <button class="about-me-btn" (click)="openModal()">
+        <h2>{{ t().aboutMe }}</h2>
+        <span class="btn-icon">→</span>
+      </button>
+
+      <!-- Imagen de Perfil -->
+      <div class="profile-image-container">
+        <img
+          [src]="profileImage"
+          alt="Jhojan Danilo Toro Perez"
+          class="profile-image"
+          loading="lazy">
+      </div>
+    </section>
+
     <!-- Columna Izquierda - Proyectos -->
-    <section class="portfolio-column projects-column">
+    <section class="portfolio-column projects-column" [class.mobile-visible]="showProjects()">
       <div class="column-header">
         <h2>{{ t().projects }}</h2>
         <div class="header-actions">
@@ -89,26 +107,8 @@
       </div>
     </section>
 
-    <!-- Columna Central - Información Personal -->
-    <section class="portfolio-column center-column">
-      <!-- Botón "Más sobre mí" -->
-      <button class="about-me-btn" (click)="openModal()">
-        <h2>{{ t().aboutMe }}</h2>
-        <span class="btn-icon">→</span>
-      </button>
-
-      <!-- Imagen de Perfil -->
-      <div class="profile-image-container">
-        <img
-          [src]="profileImage"
-          alt="Jhojan Danilo Toro Perez"
-          class="profile-image"
-          loading="lazy">
-      </div>
-    </section>
-
     <!-- Columna Derecha - Habilidades -->
-    <section class="portfolio-column skills-column">
+    <section class="portfolio-column skills-column" [class.mobile-visible]="showSkills()">
       <div class="column-header">
         <h2>{{ t().hardAndSoftSkills }}</h2>
       </div>
@@ -155,5 +155,15 @@
     [title]="currentLanguage === 'es' ? 'EN' : 'ES'">
     <span class="language-code">{{ currentLanguage === 'es' ? 'EN' : 'ES' }}</span>
   </button>
+
+  <!-- Botones de navegación móvil -->
+  <div class="mobile-navigation-buttons">
+    <button class="mobile-nav-btn" (click)="toggleProjects()" [class.active]="showProjects()">
+      <span>{{ t().projects }}</span>
+    </button>
+    <button class="mobile-nav-btn" (click)="toggleSkills()" [class.active]="showSkills()">
+      <span>{{ t().hardAndSoftSkills }}</span>
+    </button>
+  </div>
 </div>
 
