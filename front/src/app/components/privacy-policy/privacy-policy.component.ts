@@ -1,14 +1,23 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { ThemeService } from '../../services/theme.service';
 
 @Component({
   selector: 'app-privacy-policy',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule],
   templateUrl: './privacy-policy.component.html',
   styleUrl: './privacy-policy.component.css'
 })
-export class PrivacyPolicyComponent {
+export class PrivacyPolicyComponent implements OnInit {
+  private themeService = inject(ThemeService);
+
+  ngOnInit(): void {
+    this.themeService.currentTheme();
+  }
+
+  get currentWallpaper() {
+    return this.themeService.currentWallpaper();
+  }
 }
 

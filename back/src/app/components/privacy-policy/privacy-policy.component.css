@@ -4,7 +4,10 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  background: transparent;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
 }
 
 .privacy-policy-content {
@@ -68,38 +71,32 @@
   font-weight: 600;
 }
 
-.privacy-footer {
-  margin-top: 3rem;
-  padding-top: 2rem;
-  border-top: 2px solid var(--buttonBorder);
-  text-align: center;
+.section-list {
+  margin: 1rem 0;
+  padding-left: 2rem;
+  color: var(--text);
 }
 
-.back-link {
-  display: inline-block;
+.section-list li {
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+}
+
+.section-list li strong {
   color: var(--title);
-  text-decoration: none;
-  font-size: 1rem;
   font-weight: 600;
-  padding: 0.75rem 1.5rem;
-  background: var(--buttonBg);
-  backdrop-filter: blur(10px);
-  border-radius: 8px;
-  border: 2px solid var(--buttonBorder);
+}
+
+.external-link {
+  color: var(--title);
+  text-decoration: underline;
   transition: all 0.3s ease;
-  box-shadow: var(--shadowStart);
+  word-break: break-all;
 }
 
-.back-link:hover {
-  background: var(--buttonBgHover);
-  border-color: var(--title);
-  transform: translateY(-2px);
-  box-shadow: var(--shadowMid);
-  text-decoration: none;
-}
-
-.back-link:active {
-  transform: translateY(0);
+.external-link:hover {
+  color: var(--subtitle);
+  opacity: 0.8;
 }
 
 /* Responsive Design */
@@ -157,11 +154,6 @@
   .privacy-section {
     padding: 1rem;
     margin-bottom: 1.5rem;
-  }
-
-  .back-link {
-    font-size: 0.9rem;
-    padding: 0.625rem 1.25rem;
   }
 }
 
