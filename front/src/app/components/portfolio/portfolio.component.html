@@ -12,23 +12,22 @@
         class="theme-icon">
     </button>
     
-    <!-- CV Section (Before name, 70-80% width) -->
-    <div class="cv-section-container">
-      @if (cvUrl()) {
-        <a [href]="cvUrl()" target="_blank" class="cv-download-btn" title="Descargar curriculum">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="7 10 12 15 17 10"></polyline>
-            <line x1="12" y1="15" x2="12" y2="3"></line>
-          </svg>
-          <span class="cv-tooltip">Descargar curriculum</span>
-        </a>
-      }
-    </div>
-    
     <div class="name-section">
-      <!-- Full Name -->
-      <h1 class="full-name">{{ fullName }}</h1>
+      <!-- CV Button (Left of name) -->
+      <div class="name-row">
+        @if (cvUrl()) {
+          <a [href]="cvUrl()" target="_blank" class="cv-download-btn" title="Descargar curriculum">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span class="cv-tooltip">Descargar curriculum</span>
+          </a>
+        }
+        <!-- Full Name -->
+        <h1 class="full-name">{{ fullName }}</h1>
+      </div>
       
       <!-- Contact Section (Below name) -->
       @if (contactInfo().length > 0) {
