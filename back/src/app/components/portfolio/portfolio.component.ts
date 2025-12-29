@@ -9,7 +9,7 @@ import { PortfolioService } from '../../services/portfolio.service';
 import { DataMigrationService } from '../../services/data-migration.service';
 import { TranslationService } from '../../services/translation.service';
 import { ModalComponent } from '../modal/modal.component';
-import type { ICardProjects, ICardNormal, IContent } from '@models';
+import type { ICardProjects, ICardNormal, IContent, IContactInfo } from '@models';
 import { TypeApp, Subcontent } from '@models';
 
 @Component({
@@ -42,6 +42,7 @@ export class PortfolioComponent implements OnInit, OnDestroy {
   skills = computed(() => this.portfolioService.skills());
   allContents = computed(() => this.portfolioService.contents());
   cvUrl = this.portfolioService.cvUrl;
+  contactInfo = computed(() => this.portfolioService.contactInfo());
   
   // Ordenamiento de proyectos
   projectSortOrder = signal<'default' | 'name-asc' | 'name-desc' | 'state-asc' | 'state-desc' | 'recent-first' | 'oldest-first'>('default');
@@ -134,6 +135,8 @@ export class PortfolioComponent implements OnInit, OnDestroy {
   editingContentIndex = signal<number | null>(null);
   editingContentItemIndex = signal<number | null>(null);
   editingCvUrl = signal<boolean>(false);
+  editingContact = signal<number | null>(null);
+  addingContact = signal<boolean>(false);
   
   // Formularios temporales
   editProjectForm = signal<Partial<ICardProjects>>({});
@@ -141,6 +144,7 @@ export class PortfolioComponent implements OnInit, OnDestroy {
   editSkillObjectForm = signal<{ name: string; img: string; url?: string }>({ name: '', img: '', url: '' });
   editContentForm = signal<Partial<any>>({});
   editCvUrlForm = signal<string>('');
+  editContactForm: IContactInfo = { name: '', url: '', icon: '' };
   
   // Estados para agregar nuevas habilidades
   addingSkillItem = signal<number | null>(null);
@@ -504,6 +508,49 @@ export class PortfolioComponent implements OnInit, OnDestroy {
     const url = this.cvUrl();
     if (url) {
       window.open(url, '_blank');
+    }
+  }
+
+  // ===== CONTACTO =====
+  startAddContact(): void {
+    this.editContactForm = { name: '', url: '', icon: '' };
+    this.addingContact.set(true);
+    this.editingContact.set(null);
+  }
+
+  startEditContact(index: number): void {
+    const contact = this.contactInfo()[index];
+    this.editContactForm = { ...contact };
+    this.editingContact.set(index);
+    this.addingContact.set(false);
+  }
+
+  cancelEditContact(): void {
+    this.editingContact.set(null);
+    this.addingContact.set(false);
+    this.editContactForm = { name: '', url: '', icon: '' };
+  }
+
+  async saveContact(): Promise<void> {
+    if (this.editContactForm.name?.trim() && this.editContactForm.url?.trim()) {
+      const contact: IContactInfo = {
+        name: this.editContactForm.name.trim(),
+        url: this.editContactForm.url.trim(),
+        icon: this.editContactForm.icon?.trim() || undefined
+      };
+      
+      if (this.editingContact() !== null) {
+        await this.portfolioService.updateContactInfo(this.editingContact()!, contact);
+      } else {
+        await this.portfolioService.addContactInfo(contact);
+      }
+      this.cancelEditContact();
+    }
+  }
+
+  async deleteContact(index: number): Promise<void> {
+    if (confirm('¿Estás seguro de eliminar este medio de contacto?')) {
+      await this.portfolioService.deleteContactInfo(index);
     }
   }
 

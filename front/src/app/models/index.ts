@@ -16,5 +16,11 @@ export type {
   IContent,
   ISubContend,
 } from './shared/i-content.model';
+export {
+  ContactInfo,
+} from './shared/i-contact-info.model';
+export type {
+  IContactInfo,
+} from './shared/i-contact-info.model';
 
 // Common

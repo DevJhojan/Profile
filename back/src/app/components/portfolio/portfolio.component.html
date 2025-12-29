@@ -39,6 +39,55 @@
         }
       }
       <h1 class="full-name">{{ fullName }}</h1>
+      
+      <!-- Sección de Contacto -->
+      <div class="contact-section">
+        @if (addingContact()) {
+          <div class="contact-edit-form">
+            <input type="text" [(ngModel)]="editContactForm.name" placeholder="Nombre (ej: LinkedIn, GitHub)" class="contact-input">
+            <input type="url" [(ngModel)]="editContactForm.url" placeholder="URL" class="contact-input">
+            <input type="text" [(ngModel)]="editContactForm.icon" placeholder="URL del icono (opcional)" class="contact-input">
+            <div class="contact-actions">
+              <button class="save-btn" (click)="saveContact()">Guardar</button>
+              <button class="cancel-btn" (click)="cancelEditContact()">Cancelar</button>
+            </div>
+          </div>
+        } @else {
+          @if (contactInfo().length > 0) {
+            @for (contact of contactInfo(); track contact.url; let i = $index) {
+              @if (editingContact() === i) {
+                <div class="contact-edit-form">
+                  <input type="text" [(ngModel)]="editContactForm().name" placeholder="Nombre" class="contact-input">
+                  <input type="url" [(ngModel)]="editContactForm().url" placeholder="URL" class="contact-input">
+                  <input type="text" [(ngModel)]="editContactForm().icon" placeholder="URL del icono (opcional)" class="contact-input">
+                  <div class="contact-actions">
+                    <button class="save-btn" (click)="saveContact()">Guardar</button>
+                    <button class="cancel-btn" (click)="cancelEditContact()">Cancelar</button>
+                  </div>
+                </div>
+              } @else {
+                <div class="contact-item">
+                  <a [href]="contact.url" target="_blank" rel="noopener noreferrer" class="contact-btn" [title]="contact.name">
+                    @if (contact.icon) {
+                      <img [src]="contact.icon" [alt]="contact.name" class="contact-icon">
+                    }
+                    <span>{{ contact.name }}</span>
+                  </a>
+                  @if (isAuthenticated) {
+                    <div class="contact-item-actions">
+                      <button class="edit-btn" (click)="startEditContact(i)" title="Editar">✏️</button>
+                      <button class="delete-btn" (click)="deleteContact(i)" title="Eliminar">🗑️</button>
+                    </div>
+                  }
+                </div>
+              }
+            }
+          }
+          @if (isAuthenticated) {
+            <button class="add-contact-btn" (click)="startAddContact()" title="Agregar contacto">+ Agregar Contacto</button>
+          }
+        }
+      </div>
     </div>
   </header>
 

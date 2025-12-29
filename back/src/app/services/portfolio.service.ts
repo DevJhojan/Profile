@@ -10,7 +10,7 @@ import {
   DatabaseReference 
 } from 'firebase/database';
 import { database } from './firebase.config';
-import type { ICardProjects, ICardNormal, IContent } from '@models';
+import type { ICardProjects, ICardNormal, IContent, IContactInfo } from '@models';
 
 interface PortfolioData {
   projects: ICardProjects[];
@@ -27,18 +27,21 @@ export class PortfolioService {
   skills = signal<ICardNormal[]>([]);
   contents = signal<IContent[]>([]);
   cvUrl = signal<string>('');
+  contactInfo = signal<IContactInfo[]>([]);
   isLoading = signal<boolean>(false);
 
   private projectsRef: DatabaseReference;
   private skillsRef: DatabaseReference;
   private contentsRef: DatabaseReference;
   private cvUrlRef: DatabaseReference;
+  private contactInfoRef: DatabaseReference;
 
   constructor() {
     this.projectsRef = ref(database, 'portfolio/projects');
     this.skillsRef = ref(database, 'portfolio/skills');
     this.contentsRef = ref(database, 'portfolio/contents');
     this.cvUrlRef = ref(database, 'portfolio/cvUrl');
+    this.contactInfoRef = ref(database, 'portfolio/contactInfo');
 
     // Suscribirse a cambios en tiempo real
     this.subscribeToChanges();
@@ -63,6 +66,11 @@ export class PortfolioService {
     onValue(this.cvUrlRef, (snapshot) => {
       const data = snapshot.val();
       this.cvUrl.set(data || '');
+    });
+
+    onValue(this.contactInfoRef, (snapshot) => {
+      const data = snapshot.val();
+      this.contactInfo.set(data || []);
     });
   }
 
@@ -315,13 +323,58 @@ export class PortfolioService {
     }
   }
 
+  // ===== CONTACTO =====
+  async loadContactInfo(): Promise<void> {
+    try {
+      const snapshot = await get(this.contactInfoRef);
+      const data = snapshot.val();
+      this.contactInfo.set(data || []);
+    } catch (error) {
+      console.error('Error al cargar información de contacto:', error);
+    }
+  }
+
+  async addContactInfo(contact: IContactInfo): Promise<void> {
+    try {
+      const currentContacts = this.contactInfo();
+      const newContacts = [...currentContacts, contact];
+      await set(this.contactInfoRef, newContacts);
+    } catch (error) {
+      console.error('Error al agregar contacto:', error);
+      throw error;
+    }
+  }
+
+  async updateContactInfo(index: number, contact: IContactInfo): Promise<void> {
+    try {
+      const currentContacts = this.contactInfo();
+      currentContacts[index] = contact;
+      await set(this.contactInfoRef, currentContacts);
+    } catch (error) {
+      console.error('Error al actualizar contacto:', error);
+      throw error;
+    }
+  }
+
+  async deleteContactInfo(index: number): Promise<void> {
+    try {
+      const currentContacts = this.contactInfo();
+      currentContacts.splice(index, 1);
+      await set(this.contactInfoRef, currentContacts);
+    } catch (error) {
+      console.error('Error al eliminar contacto:', error);
+      throw error;
+    }
+  }
+
   // Cargar todos los datos iniciales
   async initializeData(): Promise<void> {
     await Promise.all([
       this.loadProjects(),
       this.loadSkills(),
       this.loadContents(),
-      this.loadCvUrl()
+      this.loadCvUrl(),
+      this.loadContactInfo()
     ]);
   }
 
@@ -331,6 +384,7 @@ export class PortfolioService {
     off(this.skillsRef);
     off(this.contentsRef);
     off(this.cvUrlRef);
+    off(this.contactInfoRef);
   }
 }
 

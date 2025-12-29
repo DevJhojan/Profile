@@ -30,6 +30,7 @@ export class PortfolioComponent implements OnInit, OnDestroy {
   skills = this.portfolioService.skills;
   allContents = this.portfolioService.contents;
   cvUrl = this.portfolioService.cvUrl;
+  contactInfo = this.portfolioService.contactInfo;
   isLoading = this.portfolioService.isLoading;
   
   // Ordenamiento de proyectos

@@ -23,6 +23,18 @@
       </a>
     }
       <h1 class="full-name">{{ fullName }}</h1>
+      @if (contactInfo().length > 0) {
+        <div class="contact-section">
+          @for (contact of contactInfo(); track contact.url) {
+            <a [href]="contact.url" target="_blank" rel="noopener noreferrer" class="contact-btn" [title]="contact.name">
+              @if (contact.icon) {
+                <img [src]="contact.icon" [alt]="contact.name" class="contact-icon">
+              }
+              <span>{{ contact.name }}</span>
+            </a>
+          }
+        </div>
+      }
     </div>
   </header>
 

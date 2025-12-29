@@ -5,7 +5,7 @@ import {
   DatabaseReference 
 } from 'firebase/database';
 import { database } from './firebase.config';
-import type { ICardProjects, ICardNormal, IContent } from '@models';
+import type { ICardProjects, ICardNormal, IContent, IContactInfo } from '@models';
 
 @Injectable({
   providedIn: 'root'
@@ -16,18 +16,21 @@ export class PortfolioService {
   skills = signal<ICardNormal[]>([]);
   contents = signal<IContent[]>([]);
   cvUrl = signal<string>('');
+  contactInfo = signal<IContactInfo[]>([]);
   isLoading = signal<boolean>(true);
 
   private projectsRef: DatabaseReference;
   private skillsRef: DatabaseReference;
   private contentsRef: DatabaseReference;
   private cvUrlRef: DatabaseReference;
+  private contactInfoRef: DatabaseReference;
 
   constructor() {
     this.projectsRef = ref(database, 'portfolio/projects');
     this.skillsRef = ref(database, 'portfolio/skills');
     this.contentsRef = ref(database, 'portfolio/contents');
     this.cvUrlRef = ref(database, 'portfolio/cvUrl');
+    this.contactInfoRef = ref(database, 'portfolio/contactInfo');
 
     // Suscribirse a cambios en tiempo real (solo lectura)
     this.subscribeToChanges();
@@ -66,6 +69,14 @@ export class PortfolioService {
       this.cvUrl.set(data || '');
     }, (error) => {
       console.error('Error al cargar URL del CV:', error);
+    });
+
+    // Escuchar cambios en información de contacto
+    onValue(this.contactInfoRef, (snapshot) => {
+      const data = snapshot.val();
+      this.contactInfo.set(data || []);
+    }, (error) => {
+      console.error('Error al cargar información de contacto:', error);
     });
   }
 }
