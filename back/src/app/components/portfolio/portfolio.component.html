@@ -1,17 +1,19 @@
 <div class="portfolio-container">
   <!-- Header -->
   <header class="portfolio-header">
-    <button 
-      class="theme-toggle-btn" 
+    <button
+      class="theme-toggle-btn"
       (click)="toggleTheme()"
       [attr.aria-label]="t().changeThemeToLight"
       [title]="t().changeTheme">
-      <img 
-        [src]="currentTheme === 'dark' ? 'assets/img/Cambio_tema/sun.png' : 'assets/img/Cambio_tema/moon.png'" 
+      <img
+        [src]="currentTheme === 'dark' ? 'assets/img/Cambio_tema/sun.png' : 'assets/img/Cambio_tema/moon.png'"
         [alt]="currentTheme === 'dark' ? t().changeThemeToLight : t().changeThemeToDark"
         class="theme-icon">
     </button>
-    <div class="name-section">
+    
+    <!-- CV Section (Before name, 70-80% width) -->
+    <div class="cv-section-container">
       @if (editingCvUrl()) {
         <div class="cv-url-edit-form">
           <input type="text" [(ngModel)]="editCvUrlForm" placeholder="URL del CV" class="cv-url-input">
@@ -38,9 +40,13 @@
           <button class="edit-cv-url-btn" (click)="startEditCvUrl()" title="Editar URL del CV">✏️</button>
         }
       }
+    </div>
+    
+    <div class="name-section">
+      <!-- Full Name -->
       <h1 class="full-name">{{ fullName }}</h1>
       
-      <!-- Sección de Contacto -->
+      <!-- Contact Section (Below name) -->
       <div class="contact-section">
         @if (addingContact()) {
           <div class="contact-edit-form">
@@ -57,9 +63,9 @@
             @for (contact of contactInfo(); track contact.url; let i = $index) {
               @if (editingContact() === i) {
                 <div class="contact-edit-form">
-                  <input type="text" [(ngModel)]="editContactForm().name" placeholder="Nombre" class="contact-input">
-                  <input type="url" [(ngModel)]="editContactForm().url" placeholder="URL" class="contact-input">
-                  <input type="text" [(ngModel)]="editContactForm().icon" placeholder="URL del icono (opcional)" class="contact-input">
+                  <input type="text" [(ngModel)]="editContactForm.name" placeholder="Nombre" class="contact-input">
+                  <input type="url" [(ngModel)]="editContactForm.url" placeholder="URL" class="contact-input">
+                  <input type="text" [(ngModel)]="editContactForm.icon" placeholder="URL del icono (opcional)" class="contact-input">
                   <div class="contact-actions">
                     <button class="save-btn" (click)="saveContact()">Guardar</button>
                     <button class="cancel-btn" (click)="cancelEditContact()">Cancelar</button>
