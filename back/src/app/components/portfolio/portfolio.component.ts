@@ -1,6 +1,7 @@
 import { Component, inject, OnInit, OnDestroy, computed, signal, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { ThemeService } from '../../services/theme.service';
 import { LanguageService } from '../../services/language.service';
 import { AuthService } from '../../services/auth.service';
@@ -14,7 +15,7 @@ import { TypeApp, Subcontent } from '@models';
 @Component({
   selector: 'app-portfolio',
   standalone: true,
-  imports: [CommonModule, ModalComponent, FormsModule],
+  imports: [CommonModule, ModalComponent, FormsModule, RouterLink],
   templateUrl: './portfolio.component.html',
   styleUrl: './portfolio.component.css'
 })

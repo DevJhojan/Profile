@@ -1,5 +1,6 @@
 import { Component, inject, OnInit, OnDestroy, computed, signal, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { ThemeService } from '../../services/theme.service';
 import { LanguageService } from '../../services/language.service';
 import { PortfolioService } from '../../services/portfolio.service';
@@ -10,7 +11,7 @@ import type { ICardProjects, ICardNormal, IContent } from '@models';
 @Component({
   selector: 'app-portfolio',
   standalone: true,
-  imports: [CommonModule, ModalComponent],
+  imports: [CommonModule, ModalComponent, RouterLink],
   templateUrl: './portfolio.component.html',
   styleUrl: './portfolio.component.css'
 })

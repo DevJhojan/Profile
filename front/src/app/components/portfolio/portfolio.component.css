@@ -174,6 +174,30 @@
   }
 }
 
+/* En pantallas mayores a 1070px, ordenar columnas: Proyectos -> Centro -> Habilidades */
+@media (min-width: 1071px) {
+  .portfolio-main {
+    flex-direction: row;
+  }
+
+  .projects-column {
+    order: 1 !important;
+  }
+
+  .center-column {
+    order: 2 !important;
+  }
+
+  .skills-column {
+    order: 3 !important;
+  }
+
+  /* Resetear el order de mobile-first en desktop */
+  .mobile-first {
+    order: 2 !important;
+  }
+}
+
 .portfolio-column:hover {
   box-shadow: none;
   transform: none;
@@ -181,11 +205,14 @@
 
 .column-header {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   border-bottom: 2px solid var(--subtitle);
   padding-bottom: 0.5rem;
   margin-bottom: 0.75rem;
+  gap: 0.5rem;
+  position: relative;
 }
 
 .column-header h2 {
@@ -194,7 +221,31 @@
   color: var(--title);
   margin: 0;
   text-align: left;
-  flex: 1;
+  width: 100%;
+}
+
+.privacy-link {
+  color: var(--title);
+  text-decoration: none;
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+  padding: 0.25rem 0;
+  opacity: 0.8;
+}
+
+.privacy-link:hover {
+  color: var(--subtitle);
+  text-decoration: underline;
+  opacity: 1;
+}
+
+.column-header .header-actions {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .header-actions {
