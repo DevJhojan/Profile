@@ -5,11 +5,12 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build --configuration production",
-    "build:reload": "ng build --configuration production && sudo systemctl reload nginx",
+    "build:reload": "ng build --configuration production && bash scripts/fix-permissions.sh",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "reload": "sudo systemctl reload nginx",
     "fix:nginx": "bash scripts/fix-nginx-conflict.sh",
+    "fix:permissions": "bash scripts/fix-permissions.sh",
     "setup:server": "bash scripts/setup-local-server.sh",
     "watch:reload": "bash scripts/watch-and-reload.sh"
   },
